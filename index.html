@@ -29,9 +29,21 @@ h1{font-size:28px;margin:4px 0 2px}h2{font-size:20px;margin:0 0 8px}
 .combo{text-align:center;font-weight:800;font-size:22px;min-height:34px;margin:0 0 8px}
 .pop{animation:pop .5s cubic-bezier(.3,1.6,.5,1)}@keyframes pop{from{transform:scale(.4);opacity:0}}
 .fx{position:fixed;top:-30px;font-size:28px;pointer-events:none;animation:fall 1.6s ease-in forwards;z-index:9}@keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
-@media (prefers-reduced-motion:reduce){.trail .me,.pop{animation:none}.fx{display:none}}
+@media (prefers-reduced-motion:reduce){.trail .me,.pop,.dz,.nt{animation:none}.fx{display:none}}
 .dots{display:flex;gap:6px;margin:0 0 14px}.dots i{flex:1;height:8px;border-radius:5px;background:var(--ac2)}.dots i.d{background:var(--ac)}
-.q{font-size:52px;font-weight:800;text-align:center;padding:30px 8px;letter-spacing:1px}
+.q{font-size:46px;font-weight:800;text-align:center;padding:12px 8px;letter-spacing:1px}
+.stage{height:80px;text-align:center;margin:0 0 4px}.stage .dz{display:inline-block;font-size:46px;line-height:56px}.stage .cap{font-weight:800;font-size:15px;height:20px}
+.nt{display:inline-block;width:34px;font-size:24px;animation:flt 1s ease-in-out infinite}.nt.n2{animation-delay:.4s}
+@keyframes flt{50%{transform:translateY(-10px) rotate(12deg)}}
+.d0{opacity:.55}.d1{animation:sway .9s ease-in-out infinite}.d2{animation:hop2 .5s ease-in-out infinite}.d3{animation:spin 1s linear infinite,hop2 .5s ease-in-out infinite}.d4{animation:party .6s ease-in-out infinite}
+@keyframes sway{0%,100%{transform:rotate(-12deg)}50%{transform:rotate(12deg)}}
+@keyframes hop2{50%{transform:translateY(-12px) scale(1.15)}}
+@keyframes spin{to{rotate:360deg}}
+@keyframes party{25%{transform:translateY(-14px) rotate(-18deg) scale(1.2)}75%{transform:translateY(-14px) rotate(18deg) scale(1.2)}}
+.fbw{min-height:70px}.fbw .fb{font-size:15px;margin:0 0 6px;padding:8px 12px}
+.ar{display:flex;gap:6px;margin:0 0 6px}.ar .b{width:64px;margin:0;font-size:24px;min-height:56px}
+.ans{flex:1;min-height:56px;display:grid;place-items:center;font-size:32px;font-weight:800;border:2px solid var(--bd);border-radius:16px;background:var(--card)}
+.kp5{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:0 0 6px}.kp5 .b{margin:0;min-height:52px;font-size:24px}
 input{width:100%;min-height:62px;font:inherit;font-size:30px;font-weight:700;text-align:center;border-radius:16px;border:2px solid var(--bd);background:var(--card);color:var(--tx);margin:0 0 12px}
 .fb{border-radius:14px;padding:12px 14px;margin:0 0 12px;font-size:17px}
 .fb.ok{background:var(--ok2);color:var(--ok)}.fb.tp{background:var(--tp2);color:var(--tp)}
@@ -108,8 +120,28 @@ let AC;const snd=(f,d,t,s,v,f2)=>{if(S.mute)return;try{AC=AC||new(window.AudioCo
 const ding=()=>{snd(660,.12,`triangle`);snd(880,.16,`triangle`,.09)},boing=()=>{snd(150,.28,`sine`,0,.25,650);snd(650,.25,`sine`,.28,.2,180)},fan=()=>[523,659,784,1047,1319].forEach((f,k)=>snd(f,.18,`triangle`,k*.1,.18));
 const burst=e=>{for(let k=0;k<26;k++){const x=document.createElement(`span`);x.className=`fx`;x.textContent=pick(e);x.style.left=r(0,92)+`vw`;x.style.animationDelay=(r(0,40)/100)+`s`;document.body.appendChild(x);setTimeout(()=>x.remove(),2300)}};
 const TR=[`🌲`,`🍄`,`🌉`,`🐊`,`⛰️`,`🌋`,`🏝️`,`🦀`,`🏰`,`💎`];
-const trail=()=>{const p=S.steps%10;return `<div class="trail">${TR.map((e,k)=>`<span class="${k<p?`v`:k==p?`me`:``}">${k==p?`🦥`:e}</span>`).join(``)}</div>`};
-const combo=()=>cb>=2?`<div class="combo${locked&&cb>=3?` pop`:``}">${`🔥`.repeat(Math.min(cb,8))} ${cb>=8?`TÖKÉLETES! `:cb>=5?`SZUPER! `:cb>=3?`SOROZAT! `:``}${cb} egymás után</div>`:`<div class="combo"></div>`;
+const trail=()=>{const p=S.steps%10;return `<div class="trail">${TR.map((e,k)=>`<span class="${k<p?`v`:k==p?`me`:``}">${k==p?DZ:e}</span>`).join(``)}</div>`};
+let ans=``,seq=null,stp=0;
+const DZ=`🦖`,fq=n=>261.63*Math.pow(2,n/12),ac=()=>{AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(AC.state==`suspended`)AC.resume();return AC};
+function vox(f,d){try{const a=ac(),n=a.currentTime,o=a.createOscillator(),g=a.createGain(),b1=a.createBiquadFilter(),b2=a.createBiquadFilter(),l=a.createOscillator(),lg=a.createGain();
+ o.type=`sawtooth`;o.frequency.value=f;l.frequency.value=5.5;lg.gain.value=f*.012;l.connect(lg);lg.connect(o.frequency);
+ b1.type=b2.type=`bandpass`;b1.frequency.value=800;b2.frequency.value=1250;b1.Q.value=b2.Q.value=5;
+ o.connect(b1);o.connect(b2);b1.connect(g);b2.connect(g);g.connect(a.destination);
+ g.gain.setValueAtTime(0,n);g.gain.linearRampToValueAtTime(.5,n+.05);g.gain.linearRampToValueAtTime(0,n+d);
+ o.start(n);l.start(n);o.stop(n+d);l.stop(n+d)}catch(e){}}
+function tick(){if(!cb||V!=`quiz`){clearInterval(seq);seq=null;return}if(S.mute)return;
+ const s=stp++%8,L=cb,sc=[0,2,4,7,9];
+ if(s%4==0)snd(150,.16,`sine`,0,.32,45);
+ if(s%2==1)snd(7000,.03,`square`,0,.025);
+ if(L>=2&&s%2==0)snd(fq([0,0,7,5][(s>>1)&3]-12),.26,`triangle`,0,.22);
+ if(L>=3&&s%2==0)snd(fq(pick(sc)+12),.22,`triangle`,0,.12);
+ if(L>=5&&s%4==2)vox(fq(pick([0,4,7])),.5);
+ if(L>=8&&s%2==1)snd(fq(pick(sc)+24),.1,`square`,0,.04)}
+const songOn=()=>{if(!seq){stp=0;seq=setInterval(tick,240)}};
+function key(k){if(locked)return;if(k==`✓`)return sub();if(k==`⌫`)ans=ans.slice(0,-1);else if(ans.length<5)ans+=k;const e=document.getElementById(`ans`);if(e)e.innerHTML=ans||`&nbsp;`}
+document.addEventListener(`keydown`,e=>{if(V!=`quiz`)return;if(/^\d$/.test(e.key))key(e.key);else if(e.key==`Backspace`)key(`⌫`);else if(e.key==`Enter`)key(`✓`)});
+const combo=()=>{const l=cb>=8?4:cb>=5?3:cb>=3?2:cb>=1?1:0;
+ return `<div class="stage">${l?`<span class="nt">${l>=2?`🎵`:``}</span><span class="dz d${l}">${DZ}</span><span class="nt n2">${l>=3?`🎶`:``}</span>`:`<span class="dz d0">${DZ}</span>`}<div class="cap">${cb>=2?`${cb>=8?`TÖKÉLETES! `:cb>=5?`SZUPER! `:cb>=3?`SOROZAT! `:``}${cb} egymás után`:`&nbsp;`}</div></div>`};
 function startFree(id){diag=false;Q=[];add(SK.find(s=>s.id==id),8);go()}const lv=p=>Math.floor(p/100);const ST=[`🦊`,`🚀`,`🐙`,`🦄`,`🐲`,`🦖`,`🪐`,`🏆`];const mast=id=>(S.hist[id]||[]).length>=8&&mean(id)>=.9;
 const today=()=>new Date().toLocaleDateString(`sv`);
 const streak=()=>{const set=new Set(S.days);let d=new Date();if(!set.has(d.toLocaleDateString(`sv`)))d.setDate(d.getDate()-1);let n=0;while(set.has(d.toLocaleDateString(`sv`))){n++;d.setDate(d.getDate()-1)}return n};
@@ -117,20 +149,20 @@ let V=`home`,Q=[],i=0,tr=0,diag=false,got=0,fb=``,hint=``,locked=false,rs=false,
 const add=(sk,n)=>{let c=0,g=0;while(c<n&&g<200){g++;const x=sk.g();if(Q.some(y=>y.q==x.q))continue;x.s=sk.id;Q.push(x);c++}};
 function startDiag(){diag=true;Q=[];SK.filter(s=>s.core).forEach(s=>add(s,2));Q.sort(()=>Math.random()-.5);go()}
 function startPractice(){diag=false;Q=[];const has=s=>(S.hist[s.id]||[]).length>0,pool=SK.filter(s=>s.core||has(s)),o=pool.slice().sort((a,b)=>mean(a.id)-mean(b.id)),ex=SK.filter(s=>!s.core).sort((a,b)=>(S.hist[a.id]||[]).length-(S.hist[b.id]||[]).length)[0],st=pool.filter(has).sort((a,b)=>mean(b.id)-mean(a.id))[0]||o[o.length-1];add(st,2);add(o[0],4);if(ex&&ex!==o[0]&&ex!==st)add(ex,2);else add(o[0],2);go()}
-function go(){i=0;tr=0;got=0;sp=0;cb=0;p0=S.pts;fb=``;hint=``;locked=false;V=`quiz`;show()}
+function go(){ans=``;i=0;tr=0;got=0;sp=0;cb=0;p0=S.pts;fb=``;hint=``;locked=false;V=`quiz`;show()}
 function rec(c,v){const h=(S.hist[c.s]||[]);h.push(v);S.hist[c.s]=h.slice(-10);save()}
 function miss(c){if(c.k){S.miss[c.k]=(S.miss[c.k]||0)+1;save()}}
-function sub(){if(locked)return;const el=document.getElementById(`in`),v=el.value.trim();if(v==``)return;const c=Q[i],ok=parseInt(v,10)===c.a;
- if(ok){if(tr==0){got++;cb++;const bn=cb%3==0?5:0;aw(10+bn);ft=bn?`Sorozat: ${cb} egymás után! ✓ +${10+bn}`:`Ügyes! ✓ +10`;if(cb==3||cb==5||cb==8){fan();burst(cb>=8?[`🌟`,`🎉`,`🔥`,`🏆`]:cb>=5?[`🎉`,`⭐`,`🔥`]:[`⭐`,`✨`])}else ding();rec(c,1);if(c.k&&S.miss[c.k]>0){S.miss[c.k]--;save()}}else{cb=0;aw(5);ft=`Megvan! ✓ +5`;snd(560,.15,`triangle`);rec(c,0);miss(c)}fb=`ok`;locked=true;show();setTimeout(next,tr==0?650:900)}
+function sub(){if(locked)return;const v=ans.trim();if(v==``)return;ans=``;const c=Q[i],ok=parseInt(v,10)===c.a;
+ if(ok){if(tr==0){got++;cb++;songOn();const bn=cb%3==0?5:0;aw(10+bn);ft=bn?`Sorozat: ${cb} egymás után! ✓ +${10+bn}`:`Ügyes! ✓ +10`;if(cb==3||cb==5||cb==8){fan();burst(cb>=8?[`🌟`,`🎉`,`🔥`,`🏆`]:cb>=5?[`🎉`,`⭐`,`🔥`]:[`⭐`,`✨`])}else ding();rec(c,1);if(c.k&&S.miss[c.k]>0){S.miss[c.k]--;save()}}else{cb=0;aw(5);ft=`Megvan! ✓ +5`;snd(560,.15,`triangle`);rec(c,0);miss(c)}fb=`ok`;locked=true;show();setTimeout(next,tr==0?650:900)}
  else if(diag){cb=0;rec(c,0);miss(c);next()}
  else if(tr==0){tr=1;hint=c.h;fb=`tp`;snd(300,.18,`sine`,0,.1,220);show()}
  else{cb=0;rec(c,0);miss(c);fb=`ans`;locked=true;show();setTimeout(next,1900)}}
-function next(){i++;tr=0;fb=``;hint=``;locked=false;if(i>=Q.length){const t=today();if(!S.days.includes(t)){S.days.push(t);aw(20)}if(diag)S.diag=true;S.steps++;save();V=`done`;boing();if(S.steps%10==0){setTimeout(fan,500);burst([`💎`,`🎉`,`⭐`,`🏆`])}}show()}
+function next(){ans=``;i++;tr=0;fb=``;hint=``;locked=false;if(i>=Q.length){const t=today();if(!S.days.includes(t)){S.days.push(t);aw(20)}if(diag)S.diag=true;S.steps++;save();V=`done`;boing();if(S.steps%10==0){setTimeout(fan,500);burst([`💎`,`🎉`,`⭐`,`🏆`])}}show()}
 function show(){if(authView())return;
  if(V==`home`){const st=streak();
   $.innerHTML=`<h1>Számolós</h1><p class="mu">${role==`child`&&U()?`Szia, ${U().child.name}! `:``}Napi 10 perc, egy dolog egyszerre.</p>
   <div class="c"><div class="row"><b>Szint ${lv(S.pts)+1}</b><span>${S.pts} pont</span></div><div class="bar"><i style="width:${S.pts%100}%"></i></div><div class="st">${ST.map((e,k)=>k<lv(S.pts)?`<span>${e}</span>`:`<span class="x">?</span>`).join(``)}</div><p class="mu" style="margin:12px 0 0">Még ${100-S.pts%100} pont a következő matricáig. ${st?`${st} napja gyakorolsz egyfolytában.`:`Ma még nem gyakoroltál.`}</p></div>
-  <div class="c"><div class="row"><b>Laci kalandja</b><span>${S.steps} lépés</span></div>${trail()}<p class="mu" style="margin:6px 0 0">Minden befejezett körrel Laci, a lajhár egy lépést tesz a kincs felé.</p></div>
+  <div class="c"><div class="row"><b>Kalandút</b><span>${S.steps} lépés</span></div>${trail()}<p class="mu" style="margin:6px 0 0">Minden befejezett körrel a dínó egy lépést tesz a kincs felé.</p></div>
   <button class="b" onclick="${S.diag?`startPractice()`:`startDiag()`}">${S.diag?`Mai gyakorlás`:`Kezdjük egy kis felméréssel`}</button>${S.diag?`<button class="b s" onclick="V='free';show()">Szabad gyakorlás</button>`:``}
   ${S.diag?`<button class="b s" onclick="startDiag()">Új felmérés</button>`:`<p class="mu">Pár feladat, hogy lássuk, min érdemes kezdeni. Itt nincs rossz válasz, csak információ.</p>`}
   ${S.diag?`<div class="c"><h2>Hol tartasz</h2>${SK.filter(s=>s.core||(S.hist[s.id]||[]).length).map(s=>`<div class="row"><span>${s.n}</span>${mast(s.id)?`<b>⭐ Mester</b>`:``}</div><div class="bar"><i style="width:${Math.round(mean(s.id)*100)}%"></i></div>`).join(``)}</div>`:``}
@@ -138,14 +170,13 @@ function show(){if(authView())return;
  else if(V==`quiz`){const c=Q[i];
   $.innerHTML=`<div class="dots">${Q.map((_,k)=>`<i class="${k<i?`d`:``}"></i>`).join(``)}</div>
   ${combo()}<div class="c"><div class="q${c.q.length>14?` t`:``}">${c.q}${c.q.length>14?``:` = ?`}</div></div>
-  ${fb==`ok`?`<div class="fb ok">${ft}</div>`:fb==`tp`?`<div class="fb tp"><b>Majdnem!</b> Egy tipp: ${hint}<br>Próbáld újra.</div>`:fb==`ans`?`<div class="fb tp">A válasz: <b>${c.a}</b>. Semmi baj, megyünk tovább!</div>`:``}
-  <input id="in" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-label="Válasz" ${locked?`disabled`:``} onkeydown="if(event.key==='Enter')sub()">
-  <button class="b" onclick="sub()" ${locked?`disabled`:``}>Kész</button>
-  <button class="l" onclick="V='home';show()">Kilépek</button>`;
-  if(!locked)document.getElementById(`in`).focus()}
+  <div class="fbw">${fb==`ok`?`<div class="fb ok">${ft}</div>`:fb==`tp`?`<div class="fb tp"><b>Majdnem!</b> Egy tipp: ${hint}<br>Próbáld újra.</div>`:fb==`ans`?`<div class="fb tp">A válasz: <b>${c.a}</b>. Semmi baj, megyünk tovább!</div>`:``}</div>
+  <div class="ar"><div class="ans" id="ans">${ans||`&nbsp;`}</div><button class="b s" onclick="key('⌫')" aria-label="Törlés">⌫</button><button class="b" onclick="key('✓')" aria-label="Kész">✓</button></div>
+  <div class="kp5">${[1,2,3,4,5,6,7,8,9,0].map(k=>`<button class="b s" onclick="key('${k}')">${k}</button>`).join(``)}</div>
+  <button class="l" onclick="V='home';show()">Kilépek</button>`;}
  else if(V==`done`){const w=SK.slice().sort((a,b)=>mean(a.id)-mean(b.id))[0];
   $.innerHTML=`<div class="c"><div class="big">🎉</div><h2 style="text-align:center">${diag?`Kész a felmérés!`:`Mára ennyi, szép munka!`}</h2>
-  <p class="mu" style="text-align:center">${diag?`Most már tudjuk, min érdemes kezdeni.`:`Elsőre jó: ${got} / ${Q.length}. Holnap folytatjuk!`}</p><div class="big">+${sp} pont</div>${trail()}<p class="mu" style="text-align:center">${S.steps%10==0?`Megtaláltátok a kincset! 💎 Új kaland kezdődik.`:`Laci, a lajhár egy lépéssel közelebb ért a kincshez. Boing!`}</p>${lv(S.pts)>lv(p0)&&lv(p0)<ST.length?`<p style="text-align:center;font-size:18px">Új szint! Új matrica: <span style="font-size:34px">${ST[Math.min(lv(S.pts),ST.length)-1]}</span></p>`:``}</div>
+  <p class="mu" style="text-align:center">${diag?`Most már tudjuk, min érdemes kezdeni.`:`Elsőre jó: ${got} / ${Q.length}. Holnap folytatjuk!`}</p><div class="big">+${sp} pont</div>${trail()}<p class="mu" style="text-align:center">${S.steps%10==0?`Megtaláltátok a kincset! 💎 Új kaland kezdődik.`:`A dínó egy lépéssel közelebb ért a kincshez. Boing!`}</p>${lv(S.pts)>lv(p0)&&lv(p0)<ST.length?`<p style="text-align:center;font-size:18px">Új szint! Új matrica: <span style="font-size:34px">${ST[Math.min(lv(S.pts),ST.length)-1]}</span></p>`:``}</div>
   <button class="b" onclick="V='home';show()">Vissza</button>`}
  else if(V==`free`){$.innerHTML=`<h1>Szabad gyakorlás</h1><p class="mu">Válassz, mit szeretnél gyakorolni. 8 feladat jön.</p>${SK.map(s=>`<button class="b s" onclick="startFree('${s.id}')">${s.n}</button>`).join(``)}<button class="l" onclick="V='home';show()">Vissza</button>`}
  else if(V==`parent`){const m=Object.entries(S.miss).filter(e=>e[1]>0).sort((a,b)=>b[1]-a[1]).slice(0,8);
