@@ -3,7 +3,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Számolós</title>
 <link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#4757d6"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Számolós">
-<style>.kp{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 10px}.kp .b{margin:0;font-size:26px}input.f{font-size:18px;min-height:54px}</style>
+<style>.kp{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:0 0 8px}.kp .b{margin:0;font-size:26px;min-height:50px}input.f{font-size:18px;min-height:54px}</style>
 <style>
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
 --bg:#eef2fb;--card:#fff;--tx:#1d2340;--mu:#66708f;--ac:#4757d6;--acx:#fff;--ac2:#e3e7fb;--ok:#14876a;--ok2:#d9f3ea;--tp:#8a5a00;--tp2:#fff1cf;--bd:#d9def0}
@@ -24,7 +24,7 @@ h1{font-size:28px;margin:4px 0 2px}h2{font-size:20px;margin:0 0 8px}
 .bar{height:10px;border-radius:6px;background:var(--ac2);overflow:hidden;margin:0 0 12px}
 .bar i{display:block;height:100%;background:var(--ac);border-radius:6px}
 .q.t{font-size:21px;font-weight:700;line-height:1.45;padding:22px 6px;letter-spacing:0;text-align:left}
-.trail{display:flex;gap:4px;margin:10px 0 4px}.trail span{flex:1;aspect-ratio:1;display:grid;place-items:center;border-radius:10px;background:var(--ac2);font-size:18px}.trail .v{opacity:.35}.trail .me{background:var(--ac);font-size:24px;animation:hop 1.4s ease-in-out infinite}
+.trail{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:10px 0 4px}.trail span{aspect-ratio:1;display:grid;place-items:center;border-radius:12px;background:var(--ac2);background:color-mix(in srgb,var(--wc,#4757d6) 22%,var(--card));font-size:26px}.trail .v{opacity:.35}.trail .me{background:var(--wc,var(--ac));font-size:32px;animation:hop 1.4s ease-in-out infinite}
 @keyframes hop{50%{transform:translateY(-6px)}}
 .combo{text-align:center;font-weight:800;font-size:22px;min-height:34px;margin:0 0 8px}
 .pop{animation:pop .5s cubic-bezier(.3,1.6,.5,1)}@keyframes pop{from{transform:scale(.4);opacity:0}}
@@ -32,7 +32,7 @@ h1{font-size:28px;margin:4px 0 2px}h2{font-size:20px;margin:0 0 8px}
 @media (prefers-reduced-motion:reduce){.trail .me,.pop,.dz,.nt{animation:none}.fx{display:none}}
 .dots{display:flex;gap:6px;margin:0 0 14px}.dots i{flex:1;height:8px;border-radius:5px;background:var(--ac2)}.dots i.d{background:var(--ac)}
 .q{font-size:46px;font-weight:800;text-align:center;padding:12px 8px;letter-spacing:1px}
-.stage{height:80px;text-align:center;margin:0 0 4px}.stage .dz{display:inline-block;font-size:46px;line-height:56px}.stage .cap{font-weight:800;font-size:15px;height:20px}
+.stage{height:72px;text-align:center;margin:0 0 4px}.stage .dz{display:inline-block;font-size:46px;line-height:56px}.stage .cap{font-weight:800;font-size:15px;height:20px}
 .nt{display:inline-block;width:34px;font-size:24px;animation:flt 1s ease-in-out infinite}.nt.n2{animation-delay:.4s}
 @keyframes flt{50%{transform:translateY(-10px) rotate(12deg)}}
 .d0{opacity:.55}.d1{animation:sway .9s ease-in-out infinite}.d2{animation:hop2 .5s ease-in-out infinite}.d3{animation:spin 1s linear infinite,hop2 .5s ease-in-out infinite}.d4{animation:party .6s ease-in-out infinite}
@@ -40,9 +40,9 @@ h1{font-size:28px;margin:4px 0 2px}h2{font-size:20px;margin:0 0 8px}
 @keyframes hop2{50%{transform:translateY(-12px) scale(1.15)}}
 @keyframes spin{to{rotate:360deg}}
 @keyframes party{25%{transform:translateY(-14px) rotate(-18deg) scale(1.2)}75%{transform:translateY(-14px) rotate(18deg) scale(1.2)}}
-.fbw{min-height:70px}.fbw .fb{font-size:15px;margin:0 0 6px;padding:8px 12px}
+.fbw{min-height:64px}.fbw .fb{font-size:15px;margin:0 0 6px;padding:8px 12px}
 .ar{display:flex;gap:6px;margin:0 0 6px}.ar .b{width:64px;margin:0;font-size:24px;min-height:56px}
-.ans{flex:1;min-height:56px;display:grid;place-items:center;font-size:32px;font-weight:800;border:2px solid var(--bd);border-radius:16px;background:var(--card)}
+.ans{margin:0 0 6px;min-height:52px;display:grid;place-items:center;font-size:32px;font-weight:800;border:2px solid var(--bd);border-radius:16px;background:var(--card)}
 .kp5{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:0 0 6px}.kp5 .b{margin:0;min-height:52px;font-size:24px}
 input{width:100%;min-height:62px;font:inherit;font-size:30px;font-weight:700;text-align:center;border-radius:16px;border:2px solid var(--bd);background:var(--card);color:var(--tx);margin:0 0 12px}
 .fb{border-radius:14px;padding:12px 14px;margin:0 0 12px;font-size:17px}
@@ -110,7 +110,7 @@ const SK=[
  if(t==5){const c=r(5,a+b-1);return {q:`A boltban ${a} darab piros és ${b} darab kék labda volt. ${c} darabot eladtak. Hány darab labda maradt?`,a:a+b-c,h:`${T} Két lépés: előbb számold ki, mennyi volt összesen (${a} + ${b}), aztán vond le az eladottat.`}}
  return {q:`Dóri ${a} darab kártyát gyűjtött, Peti ${b} darabbal többet. Hány darab kártyája van Petinek?`,a:a+b,h:`${T} A „többet” itt hozzáadást jelent: ${a} + ${b}.`}}}
 ];SK.slice(0,7).forEach(s=>s.core=1);const fmt=m=>`${Math.floor(m/60)}:${String(m%60).padStart(2,`0`)}`;
-let S={hist:{},miss:{},days:[],diag:false,pts:0,steps:0,mute:false};
+let S={hist:{},miss:{},days:[],diag:false,pts:0,steps:0,items:[],mute:false};
 const DB={get:()=>localStorage.getItem(`szamolos`),set:v=>localStorage.setItem(`szamolos`,v)};
 try{const t=DB.get();if(t)S=Object.assign(S,JSON.parse(t))}catch(e){}
 const save=()=>{try{DB.set(JSON.stringify(S))}catch(e){}};
@@ -120,7 +120,18 @@ let AC;const snd=(f,d,t,s,v,f2)=>{if(S.mute)return;try{AC=AC||new(window.AudioCo
 const ding=()=>{snd(660,.12,`triangle`);snd(880,.16,`triangle`,.09)},boing=()=>{snd(150,.28,`sine`,0,.25,650);snd(650,.25,`sine`,.28,.2,180)},fan=()=>[523,659,784,1047,1319].forEach((f,k)=>snd(f,.18,`triangle`,k*.1,.18));
 const burst=e=>{for(let k=0;k<26;k++){const x=document.createElement(`span`);x.className=`fx`;x.textContent=pick(e);x.style.left=r(0,92)+`vw`;x.style.animationDelay=(r(0,40)/100)+`s`;document.body.appendChild(x);setTimeout(()=>x.remove(),2300)}};
 const TR=[`🌲`,`🍄`,`🌉`,`🐊`,`⛰️`,`🌋`,`🏝️`,`🦀`,`🏰`,`💎`];
-const trail=()=>{const p=S.steps%10;return `<div class="trail">${TR.map((e,k)=>`<span class="${k<p?`v`:k==p?`me`:``}">${k==p?DZ:e}</span>`).join(``)}</div>`};
+let ev=``,fd=``;
+const WD=[
+{n:`Dzsungel`,c:`#2f8f4e`,L:[`🌴`,`🍌`,`🐒`,`🌉`,`🐊`,`🦜`,`🌺`,`🐍`,`🏛️`,`👑`],I:[`🍌`,`🥥`,`🦜`,`🌺`,`🐒`]},
+{n:`Vulkán`,c:`#d9531e`,L:[`🌋`,`🔥`,`🦎`,`🌉`,`🪨`,`🐉`,`⛏️`,`💥`,`🏰`,`💎`],I:[`🔥`,`🪨`,`🦎`,`⛏️`,`🐉`]},
+{n:`Jégvilág`,c:`#3a8fd9`,L:[`🏔️`,`⛄`,`🐧`,`🧊`,`🐻‍❄️`,`🎿`,`❄️`,`🦭`,`🏯`,`💠`],I:[`⛄`,`🧊`,`🐧`,`❄️`,`🦭`]},
+{n:`Világűr`,c:`#6a4bd6`,L:[`🚀`,`🌙`,`👽`,`☄️`,`🛸`,`🪐`,`⭐`,`🛰️`,`🌌`,`🏆`],I:[`🌙`,`☄️`,`👽`,`🪐`,`🛰️`]},
+{n:`Tenger alatt`,c:`#1c9fb0`,L:[`🏝️`,`🐠`,`🐢`,`🪸`,`🦈`,`🐙`,`🐚`,`🦀`,`🚢`,`🔱`],I:[`🐠`,`🐢`,`🪸`,`🐚`,`🐙`]}];
+const gw=n=>WD[Math.floor(n/10)%WD.length];
+const trail=d=>{const t=d&&S.steps&&S.steps%10==0?S.steps-1:S.steps,w=gw(t),p=t%10;
+ return `<div class="trail" style="--wc:${w.c}">${[0,1,2,3,4,9,8,7,6,5].map(k=>`<span class="${k<p?`v`:k==p?`me`:``}">${k==p?DZ:k==9?`🎁`:w.L[k]}</span>`).join(``)}</div>`};
+function EV(){const w=gw(S.steps-1),t=S.steps%10==0,it=t?w.L[9]:pick(w.I),nw=!S.items.includes(it);if(nw)S.items.push(it);fd=it;
+ ev=t?`Megvan a kincs! +50 pont. Új világ: ${gw(S.steps).n}!`:`A dínó talált valamit${nw?`, és bekerült a gyűjteményedbe!`:`. Ez már megvan, de jó látni!`}`;if(t)aw(50)}
 let ans=``,seq=null,stp=0;
 const DZ=`🦖`,fq=n=>261.63*Math.pow(2,n/12),ac=()=>{AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(AC.state==`suspended`)AC.resume();return AC};
 function vox(f,d){try{const a=ac(),n=a.currentTime,o=a.createOscillator(),g=a.createGain(),b1=a.createBiquadFilter(),b2=a.createBiquadFilter(),l=a.createOscillator(),lg=a.createGain();
@@ -157,12 +168,12 @@ function sub(){if(locked)return;const v=ans.trim();if(v==``)return;ans=``;const 
  else if(diag){cb=0;rec(c,0);miss(c);next()}
  else if(tr==0){tr=1;hint=c.h;fb=`tp`;snd(300,.18,`sine`,0,.1,220);show()}
  else{cb=0;rec(c,0);miss(c);fb=`ans`;locked=true;show();setTimeout(next,1900)}}
-function next(){ans=``;i++;tr=0;fb=``;hint=``;locked=false;if(i>=Q.length){const t=today();if(!S.days.includes(t)){S.days.push(t);aw(20)}if(diag)S.diag=true;S.steps++;save();V=`done`;boing();if(S.steps%10==0){setTimeout(fan,500);burst([`💎`,`🎉`,`⭐`,`🏆`])}}show()}
+function next(){ans=``;i++;tr=0;fb=``;hint=``;locked=false;if(i>=Q.length){const t=today();if(!S.days.includes(t)){S.days.push(t);aw(20)}if(diag)S.diag=true;S.steps++;EV();save();V=`done`;boing();if(S.steps%10==0){setTimeout(fan,500);burst([`💎`,`🎉`,`⭐`,`🏆`])}}show()}
 function show(){if(authView())return;
  if(V==`home`){const st=streak();
   $.innerHTML=`<h1>Számolós</h1><p class="mu">${role==`child`&&U()?`Szia, ${U().child.name}! `:``}Napi 10 perc, egy dolog egyszerre.</p>
   <div class="c"><div class="row"><b>Szint ${lv(S.pts)+1}</b><span>${S.pts} pont</span></div><div class="bar"><i style="width:${S.pts%100}%"></i></div><div class="st">${ST.map((e,k)=>k<lv(S.pts)?`<span>${e}</span>`:`<span class="x">?</span>`).join(``)}</div><p class="mu" style="margin:12px 0 0">Még ${100-S.pts%100} pont a következő matricáig. ${st?`${st} napja gyakorolsz egyfolytában.`:`Ma még nem gyakoroltál.`}</p></div>
-  <div class="c"><div class="row"><b>Kalandút</b><span>${S.steps} lépés</span></div>${trail()}<p class="mu" style="margin:6px 0 0">Minden befejezett körrel a dínó egy lépést tesz a kincs felé.</p></div>
+  <div class="c" style="border:2px solid ${gw(S.steps).c}"><div class="row"><b>${gw(S.steps).n}</b><span>${S.steps%10} / 10 lépés</span></div>${trail()}<p class="mu" style="margin:6px 0 0">Minden kör egy lépés. Útközben tárgyakat találsz, a végén kincs vár!</p>${S.items.length?`<p class="mu" style="margin:10px 0 4px">Gyűjteményed (${S.items.length}):</p><div class="st">${S.items.map(e=>`<span>${e}</span>`).join(``)}</div>`:``}</div>
   <button class="b" onclick="${S.diag?`startPractice()`:`startDiag()`}">${S.diag?`Mai gyakorlás`:`Kezdjük egy kis felméréssel`}</button>${S.diag?`<button class="b s" onclick="V='free';show()">Szabad gyakorlás</button>`:``}
   ${S.diag?`<button class="b s" onclick="startDiag()">Új felmérés</button>`:`<p class="mu">Pár feladat, hogy lássuk, min érdemes kezdeni. Itt nincs rossz válasz, csak információ.</p>`}
   ${S.diag?`<div class="c"><h2>Hol tartasz</h2>${SK.filter(s=>s.core||(S.hist[s.id]||[]).length).map(s=>`<div class="row"><span>${s.n}</span>${mast(s.id)?`<b>⭐ Mester</b>`:``}</div><div class="bar"><i style="width:${Math.round(mean(s.id)*100)}%"></i></div>`).join(``)}</div>`:``}
@@ -171,12 +182,12 @@ function show(){if(authView())return;
   $.innerHTML=`<div class="dots">${Q.map((_,k)=>`<i class="${k<i?`d`:``}"></i>`).join(``)}</div>
   ${combo()}<div class="c"><div class="q${c.q.length>14?` t`:``}">${c.q}${c.q.length>14?``:` = ?`}</div></div>
   <div class="fbw">${fb==`ok`?`<div class="fb ok">${ft}</div>`:fb==`tp`?`<div class="fb tp"><b>Majdnem!</b> Egy tipp: ${hint}<br>Próbáld újra.</div>`:fb==`ans`?`<div class="fb tp">A válasz: <b>${c.a}</b>. Semmi baj, megyünk tovább!</div>`:``}</div>
-  <div class="ar"><div class="ans" id="ans">${ans||`&nbsp;`}</div><button class="b s" onclick="key('⌫')" aria-label="Törlés">⌫</button><button class="b" onclick="key('✓')" aria-label="Kész">✓</button></div>
-  <div class="kp5">${[1,2,3,4,5,6,7,8,9,0].map(k=>`<button class="b s" onclick="key('${k}')">${k}</button>`).join(``)}</div>
+  <div class="ans" id="ans">${ans||`&nbsp;`}</div>
+  <div class="kp">${[1,2,3,4,5,6,7,8,9,`⌫`,0,`✓`].map(k=>`<button class="b ${k==`✓`?``:`s`}" onclick="key('${k}')" aria-label="${k==`⌫`?`Törlés`:k==`✓`?`Kész`:k}">${k}</button>`).join(``)}</div>
   <button class="l" onclick="V='home';show()">Kilépek</button>`;}
  else if(V==`done`){const w=SK.slice().sort((a,b)=>mean(a.id)-mean(b.id))[0];
   $.innerHTML=`<div class="c"><div class="big">🎉</div><h2 style="text-align:center">${diag?`Kész a felmérés!`:`Mára ennyi, szép munka!`}</h2>
-  <p class="mu" style="text-align:center">${diag?`Most már tudjuk, min érdemes kezdeni.`:`Elsőre jó: ${got} / ${Q.length}. Holnap folytatjuk!`}</p><div class="big">+${sp} pont</div>${trail()}<p class="mu" style="text-align:center">${S.steps%10==0?`Megtaláltátok a kincset! 💎 Új kaland kezdődik.`:`A dínó egy lépéssel közelebb ért a kincshez. Boing!`}</p>${lv(S.pts)>lv(p0)&&lv(p0)<ST.length?`<p style="text-align:center;font-size:18px">Új szint! Új matrica: <span style="font-size:34px">${ST[Math.min(lv(S.pts),ST.length)-1]}</span></p>`:``}</div>
+  <p class="mu" style="text-align:center">${diag?`Most már tudjuk, min érdemes kezdeni.`:`Elsőre jó: ${got} / ${Q.length}. Holnap folytatjuk!`}</p><div class="big">+${sp} pont</div>${trail(1)}<div class="big pop">${fd}</div><p class="mu" style="text-align:center">${ev}</p>${lv(S.pts)>lv(p0)&&lv(p0)<ST.length?`<p style="text-align:center;font-size:18px">Új szint! Új matrica: <span style="font-size:34px">${ST[Math.min(lv(S.pts),ST.length)-1]}</span></p>`:``}</div>
   <button class="b" onclick="V='home';show()">Vissza</button>`}
  else if(V==`free`){$.innerHTML=`<h1>Szabad gyakorlás</h1><p class="mu">Válassz, mit szeretnél gyakorolni. 8 feladat jön.</p>${SK.map(s=>`<button class="b s" onclick="startFree('${s.id}')">${s.n}</button>`).join(``)}<button class="l" onclick="V='home';show()">Vissza</button>`}
  else if(V==`parent`){const m=Object.entries(S.miss).filter(e=>e[1]>0).sort((a,b)=>b[1]-a[1]).slice(0,8);
@@ -185,7 +196,7 @@ function show(){if(authView())return;
   <div class="c"><h2>Még bizonytalan tények</h2>${m.length?m.map(e=>`<div class="row"><span>${e[0]}</span><b>${e[1]}×</b></div>`).join(``):`<p class="mu">Egyelőre nincs ilyen.</p>`}</div>
   <div class="c"><div class="row"><span>Gyakorolt napok</span><b>${S.days.length}</b></div><div class="row"><span>Pontok</span><b>${S.pts}</b></div></div>
   ${role==`parent`?``:`<button class="b" onclick="pAuth=false;V='home';show()">Vissza</button>`}<button class="b s" onclick="exp()">Haladás mentése fájlba</button><button class="b s" onclick="document.getElementById('imf').click()">Haladás betöltése fájlból</button><input id="imf" type="file" accept=".json" hidden onchange="imp(this)">${role==`parent`?`<button class="b" onclick="logout()">Kilépés</button>`:``}
-  <button class="l" onclick="if(rs){S={hist:{},miss:{},days:[],diag:false,pts:0,steps:0,mute:S.mute};save();rs=false;V='home'}else{rs=true}show()">${rs?`Biztosan? Kattints még egyszer`:`Haladás törlése`}</button>`}
+  <button class="l" onclick="if(rs){S={hist:{},miss:{},days:[],diag:false,pts:0,steps:0,items:[],mute:S.mute};save();rs=false;V='home'}else{rs=true}show()">${rs?`Biztosan? Kattints még egyszer`:`Haladás törlése`}</button>`}
 }
 
 const gv=id=>document.getElementById(id).value,U=()=>{try{return JSON.parse(localStorage.getItem(`szl_users`))}catch(e){return null}};
