@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="hu"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Számolós</title>
-<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#4757d6"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Számolós">
+<title>Agytorna</title>
+<script src="config.js"></script>
+<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#4757d6"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Agytorna">
 <style>.kp{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:0 0 8px}.kp .b{margin:0;font-size:26px;min-height:50px}input.f{font-size:18px;min-height:54px}</style>
 <style>
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
@@ -136,7 +137,7 @@ const GEAR=[{e:`🤠`,s:`head`,n:`Felfedezőkalap`},{e:`🕶️`,s:`face`,n:`Nap
 const hasB=id=>S.band.includes(id);
 function gift(){const g=GEAR[S.gearN%GEAR.length];S.gearN++;if(!S.gear.includes(g.e)){S.gear.push(g.e);if(!S.eq[g.s])S.eq[g.s]=g.e}return g}
 function finishRound(){rw=[];wd=0;if(diag){stn=0;return}
- const rt=got/Q.length,o=S.steps;stn=rt>=.85?3:rt>=.6?2:1;S.stars=(S.stars||0)+stn;S.steps+=stn;
+ const rt=got/Q.length,o=S.steps;stn=rt>=.85?3:rt>=.6?2:1;S.stars=(S.stars||0)+stn;S.steps+=stn;enq(`r`,{id:rid,ts:new Date().toISOString(),subject:subj==`en`?`en`:`math`,n:Q.length,correct:got,stars:stn});
  for(let b=o+1;b<=S.steps;b++){if(b%5)continue;
   if(b%10==5){const g=gift();rw.push({e:g.e,t:`Félúti ajándék: ${g.n}!`})}
   else{wd=b;const m=BAND[b/10-1];if(m&&!hasB(m.id)){S.band.push(m.id);rw.push({e:m.e+m.i,t:`Kincs: új zenekari tag, ${m.n}! Új hangszer a zenében.`})}else{const g=gift();rw.push({e:`🎁`+g.e,t:`Kincs: ${g.n}!`})}}}
@@ -175,18 +176,18 @@ let V=`home`,Q=[],i=0,tr=0,diag=false,got=0,fb=``,hint=``,locked=false,rs=false,
 const add=(sk,n)=>{let c=0,g=0;while(c<n&&g<200){g++;const x=sk.g();if(Q.some(y=>y.q==x.q))continue;x.s=sk.id;Q.push(x);c++}};
 function startDiag(){diag=true;Q=[];SK.filter(s=>s.core).forEach(s=>add(s,2));Q.sort(()=>Math.random()-.5);go()}
 function startPractice(){diag=false;Q=[];const has=s=>(S.hist[s.id]||[]).length>0,pool=SK.filter(s=>s.core||has(s)),o=pool.slice().sort((a,b)=>mean(a.id)-mean(b.id)),ex=SK.filter(s=>!s.core).sort((a,b)=>(S.hist[a.id]||[]).length-(S.hist[b.id]||[]).length)[0],st=pool.filter(has).sort((a,b)=>mean(b.id)-mean(a.id))[0]||o[o.length-1];add(st,2);add(o[0],4);if(ex&&ex!==o[0]&&ex!==st)add(ex,2);else add(o[0],2);go()}
-function go(){ans=``;i=0;tr=0;got=0;sp=0;cb=0;p0=S.pts;fb=``;hint=``;locked=false;V=`quiz`;show()}
-function rec(c,v){const h=(S.hist[c.s]||[]);h.push(v);S.hist[c.s]=h.slice(-10);if(c.w){const w=S.words.find(x=>x.id==c.w);if(w)w.h=(w.h||[]).concat(v).slice(-6)}save()}
+function go(){ans=``;rid=uid();qt=Date.now();hid=0;i=0;tr=0;got=0;sp=0;cb=0;p0=S.pts;fb=``;hint=``;locked=false;V=`quiz`;show()}
+function rec(c,v){const h=(S.hist[c.s]||[]);h.push(v);S.hist[c.s]=h.slice(-10);if(c.w){const w=S.words.find(x=>x.id==c.w);if(w)w.h=(w.h||[]).concat(v).slice(-6)}evt(c,v);save()}
 function miss(c){if(c.k){S.miss[c.k]=(S.miss[c.k]||0)+1;save()}}
-function sub(){if(locked)return;const v=ans.trim();if(v==``)return;ans=``;const c=Q[i],ok=parseInt(v,10)===c.a;
+function sub(){if(locked)return;const v=ans.trim();if(v==``)return;ans=``;if(tr==0){const d=Date.now()-qt-hid;fms=d>60000?null:d}const c=Q[i],ok=parseInt(v,10)===c.a;
  if(ok){if(tr==0){got++;cb++;songOn();const bn=cb%3==0?5:0;aw(10+bn);ft=bn?`Sorozat! ✓`:`Ügyes! ✓`;if(cb==3||cb==5||cb==8){fan();burst(cb>=8?[`🌟`,`🎉`,`🔥`,`🏆`]:cb>=5?[`🎉`,`⭐`,`🔥`]:[`⭐`,`✨`])}else ding();rec(c,1);if(c.k&&S.miss[c.k]>0){S.miss[c.k]--;save()}}else{cb=0;aw(5);ft=`Megvan! ✓`;snd(560,.15,`triangle`);rec(c,0);miss(c)}fb=`ok`;locked=true;show();setTimeout(next,tr==0?650:900)}
  else if(diag){cb=0;rec(c,0);miss(c);next()}
  else if(tr==0){tr=1;hint=c.h;fb=`tp`;snd(300,.18,`sine`,0,.1,220);show()}
  else{cb=0;rec(c,0);miss(c);fb=`ans`;locked=true;show();setTimeout(next,1900)}}
-function next(){ans=``;i++;tr=0;fb=``;hint=``;locked=false;if(i>=Q.length){const t=today();if(!S.days.includes(t)){S.days.push(t);aw(20)}if(diag)S.diag=true;finishRound();save();V=`done`;boing()}show()}
-function show(){if(authView())return;if(V==`home`&&role==`child`&&!subj)V=`subj`;if(V==`subj`)return subjView();if(V==`home`&&subj==`en`)return homeEn();if(V==`words`)return wordsView();if(V==`wardrobe`)return wardrobeView();
+function next(){ans=``;qt=Date.now();hid=0;i++;tr=0;fb=``;hint=``;locked=false;if(i>=Q.length){const t=today();if(!S.days.includes(t)){S.days.push(t);aw(20)}if(diag)S.diag=true;finishRound();save();V=`done`;boing();flush()}show()}
+function show(){if(authView())return;if(V==`home`&&role==`child`&&!subj)V=`subj`;if(V==`subj`)return subjView();if(V==`home`&&subj==`en`)return homeEn();if(V==`words`)return wordsView();if(V==`wardrobe`)return wardrobeView();if([`start`,`cauth`,`cpair`,`cfam`,`cloud`,`pdash`].includes(V)){cloudShow();return}
  if(V==`home`){const st=streak();
-  $.innerHTML=`<h1>Számolós</h1><p class="mu">${role==`child`&&U()?`Szia, ${U().child.name}! `:``}Napi 10 perc, egy dolog egyszerre.</p>
+  $.innerHTML=`<h1>Matek</h1><p class="mu">${role==`child`&&U()?`Szia, ${U().child.name}! `:``}Napi 10 perc, egy dolog egyszerre.</p>
   ${cards()}
   <button class="b" onclick="${S.diag?`startPractice()`:`startDiag()`}">${S.diag?`Mai gyakorlás`:`Kezdjük egy kis felméréssel`}</button>${S.diag?`<button class="b s" onclick="V='free';show()">Szabad gyakorlás</button>`:``}
   ${S.diag?`<button class="b s" onclick="startDiag()">Új felmérés</button>`:`<p class="mu">Pár feladat, hogy lássuk, min érdemes kezdeni. Itt nincs rossz válasz, csak információ.</p>`}
@@ -207,7 +208,7 @@ function show(){if(authView())return;if(V==`home`&&role==`child`&&!subj)V=`subj`
   $.innerHTML=`<h1>Szülői nézet</h1><p class="mu">Az utolsó 10 válasz alapján, készségenként.</p>
   <div class="c">${SK.filter(s=>s.core||(S.hist[s.id]||[]).length).map(s=>{const n=(S.hist[s.id]||[]).length;return `<div class="row"><span>${s.n}${mast(s.id)?` ⭐ mester`:``}</span><b>${n?Math.round(mean(s.id)*100)+`%`:`még nincs adat`}</b></div><div class="bar"><i style="width:${Math.round(mean(s.id)*100)}%"></i></div>`}).join(``)}</div>
   <div class="c"><h2>Még bizonytalan tények</h2>${m.length?m.map(e=>`<div class="row"><span>${esc(e[0])}</span><b>${e[1]}×</b></div>`).join(``):`<p class="mu">Egyelőre nincs ilyen.</p>`}</div>
-  <div class="c"><div class="row"><span>Angol szókincs (${S.words.length} szó)</span><b>${(S.hist.en||[]).length?Math.round(mean(`en`)*100)+`%`:`még nincs adat`}</b></div><div class="bar"><i style="width:${Math.round(mean(`en`)*100)}%"></i></div></div><button class="b s" onclick="V='words';show()">Angol szavak kezelése</button>
+  <div class="c"><div class="row"><span>Angol szókincs (${S.words.length} szó)</span><b>${(S.hist.en||[]).length?Math.round(mean(`en`)*100)+`%`:`még nincs adat`}</b></div><div class="bar"><i style="width:${Math.round(mean(`en`)*100)}%"></i></div></div><button class="b s" onclick="V='words';show()">Angol szavak kezelése</button><button class="b s" onclick="V='cloud';show()">☁️ Felhő (szinkron, párosítás)</button>
   <div class="c"><div class="row"><span>Gyakorolt napok</span><b>${S.days.length}</b></div><div class="row"><span>Összes csillag</span><b>${S.stars||0}</b></div><div class="row"><span>Zenekar / ruhák</span><b>${S.band.length} / ${S.gear.length}</b></div></div>
   ${role==`parent`?``:`<button class="b" onclick="pAuth=false;V='home';show()">Vissza</button>`}<button class="b s" onclick="exp()">Haladás mentése fájlba</button><button class="b s" onclick="document.getElementById('imf').click()">Haladás betöltése fájlból</button><input id="imf" type="file" accept=".json" hidden onchange="imp(this)">${role==`parent`?`<button class="b" onclick="logout()">Kilépés</button>`:``}
   <button class="l" onclick="if(rs){S={hist:{},miss:{},days:[],diag:false,pts:0,steps:0,items:[],words:(S.words||[]).map(w=>({...w,h:[]})),stars:0,gear:[],eq:{head:``,face:``},gearN:0,band:[],mute:S.mute};save();rs=false;V='home'}else{rs=true}show()">${rs?`Biztosan? Kattints még egyszer`:`Haladás törlése`}</button>`}
@@ -218,14 +219,14 @@ let role=null,pAuth=false,pinFor=null,pin=``,pm=``,fails=0,lockT=0,after=null;
 async function hs(p,s){try{const b=await crypto.subtle.digest(`SHA-256`,new TextEncoder().encode(s+p));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,`0`)).join(``)}catch(e){let h=0;for(const c of s+p)h=(h*31+c.charCodeAt(0))|0;return String(h)}}
 const salt=()=>Math.random().toString(36).slice(2)+Math.random().toString(36).slice(2);
 function authView(){
- if(!role&&![`setup`,`login`,`pin`].includes(V))V=U()?`login`:`setup`;
- if((V==`parent`||V==`words`)&&!pAuth)V=role?`home`:`login`;
+ if(!role&&![`setup`,`login`,`pin`,`start`,`cauth`,`cpair`,`cfam`].includes(V))V=U()?`login`:`start`;
+ if((V==`parent`||V==`words`||V==`cloud`||V==`pdash`)&&!pAuth)V=role?`home`:`login`;
  if(V==`home`&&role==`parent`)V=`parent`;
- if(V==`setup`){$.innerHTML=`<h1>Üdv a Számolósban!</h1><p class="mu">Egyszeri beállítás a szülőnek. A PIN-kódok csak ezen az eszközön tárolódnak.</p>
+ if(V==`setup`){$.innerHTML=`<h1>Üdv az Agytornában!</h1><p class="mu">Egyszeri beállítás a szülőnek. A PIN-kódok csak ezen az eszközön tárolódnak.</p>
  <div class="c"><h2>Gyerek</h2><input class="f" id="sn" type="text" placeholder="Név" autocomplete="off"><input class="f" id="sc" type="password" inputmode="numeric" maxlength="4" placeholder="Gyerek PIN (4 jegy, elhagyható)"></div>
  <div class="c"><h2>Szülő</h2><input class="f" id="sp" type="password" inputmode="numeric" maxlength="4" placeholder="Szülői PIN (4 jegy)"></div>
  <p id="er" class="mu" style="color:var(--tp)"></p><button class="b" onclick="doSetup()">Mentés</button>`;return true}
- if(V==`login`){const u=U();$.innerHTML=`<h1>Számolós</h1><p class="mu">Ki vagy?</p><button class="b" onclick="who('child')">🧒 ${u.child.name}</button><button class="b s" onclick="who('parent')">👪 Szülő</button>`;return true}
+ if(V==`login`){const u=U();$.innerHTML=`<h1>Agytorna</h1><p class="mu">Ki vagy?</p><button class="b" onclick="who('child')">🧒 ${u.child.name}</button><button class="b s" onclick="who('parent')">👪 Szülő</button>`;return true}
  if(V==`pin`){$.innerHTML=`<h1>${pinFor==`parent`?`Szülői PIN`:`Add meg a PIN-kódod`}</h1><div class="big" style="letter-spacing:12px">${`●`.repeat(pin.length)}${`○`.repeat(4-pin.length)}</div><p class="mu" style="text-align:center;min-height:22px;color:var(--tp)">${pm}</p>
  <div class="kp">${[1,2,3,4,5,6,7,8,9,``,0,`⌫`].map(k=>k===``?`<span></span>`:`<button class="b s" onclick="pk('${k}')">${k}</button>`).join(``)}</div><button class="l" onclick="back()">Mégsem</button>`;return true}
  return false}
@@ -243,9 +244,9 @@ async function verify(){const a=U()[pinFor];if(await hs(pin,a.s)==a.h){fails=0;p
 function finish(r){pin=``;if(after==`tmp`){after=null;pAuth=true;V=`parent`}else{role=r;try{localStorage.setItem(`szl_role`,r)}catch(e){}pAuth=r==`parent`;V=r==`parent`?`parent`:`home`}show()}
 function back(){pin=``;pm=``;if(after==`tmp`){after=null;V=`home`}else V=`login`;show()}
 function logout(){try{localStorage.removeItem(`szl_role`)}catch(e){}role=null;pAuth=false;V=`login`;show()}
-function exp(){const b=new Blob([JSON.stringify(S)],{type:`application/json`}),a=document.createElement(`a`);a.href=URL.createObjectURL(b);a.download=`szamolos-haladas-${today()}.json`;a.click()}
+function exp(){const b=new Blob([JSON.stringify(S)],{type:`application/json`}),a=document.createElement(`a`);a.href=URL.createObjectURL(b);a.download=`agytorna-haladas-${today()}.json`;a.click()}
 function imp(i){const f=i.files[0];if(!f)return;f.text().then(t=>{try{const d=JSON.parse(t);if(d&&d.hist){S=Object.assign(S,d);save();alert(`Betöltve.`)}else alert(`Nem megfelelő fájl.`)}catch(e){alert(`Nem megfelelő fájl.`)}show()})}
-function boot(){const u=U();if(!u){V=`setup`;return show()}const sr=localStorage.getItem(`szl_role`);if(sr&&u[sr]){role=sr;pAuth=sr==`parent`;V=sr==`parent`?`parent`:`home`}else V=`login`;show()}
+function boot(){const u=U(),L0=LK();if(L0&&L0.role==`parent`){role=`parent`;pAuth=true;V=`pdash`;return show()}if(!u){V=`start`;return show()}const sr=localStorage.getItem(`szl_role`);if(sr&&u[sr]){role=sr;pAuth=sr==`parent`;V=sr==`parent`?`parent`:`home`}else V=`login`;show()}
 let subj=null,wtxt=``,wmsg=``;
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const SAMPLE=`apple - alma\ndog - kutya\ncat - macska\nhouse - ház\nbook - könyv\nwater - víz\nred - piros\nblue - kék\ngreen - zöld\nmother - anya\nfather - apa\nschool - iskola\ntable - asztal\nchair - szék\nsun - nap\nmoon - hold\ntree - fa\nbird - madár\nfish - hal\nmilk - tej`;
@@ -276,10 +277,10 @@ function wordsView(){const L=S.words.slice(-100).reverse();
  <button class="l" onclick="wtxt=SAMPLE;show()">Minta szavak betöltése</button>
  <input id="wf" type="file" accept=".txt,.csv,.tsv,.json,text/plain" hidden onchange="fromFile(this)"><input id="wi" type="file" accept="image/*" hidden onchange="fromImg(this)"></div>
  <div class="c"><h2>Szólista</h2>${L.length?L.map(w=>`<div class="row"><span>${esc(w.en)} – ${esc(w.hu)}</span><button class="l" onclick="delW('${w.id}')" aria-label="Törlés">✕</button></div>`).join(``):`<p class="mu">Még nincs szó.</p>`}</div>
- <button class="b" onclick="V='parent';show()">Vissza</button>`}
+ <button class="b" onclick="V='${LK()&&LK().role==`parent`&&!U()?`pdash`:`parent`}';show()">Vissza</button>`}
 function addW(){const t=document.getElementById(`wt`).value,P=parseW(t);if(!P.length){wtxt=t;wmsg=`Nem találtam szópárt. Soronként írd: angol - magyar.`;return show()}
- let n=0;P.forEach(([e,h])=>{if(!S.words.some(w=>w.en.toLowerCase()==e.toLowerCase())){S.words.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),en:e,hu:h,h:[]});n++}});save();wtxt=``;wmsg=`${n} új szó hozzáadva.`;show()}
-function delW(id){wtxt=document.getElementById(`wt`).value;S.words=S.words.filter(w=>w.id!=id);save();show()}
+ let n=0;P.forEach(([e,h])=>{if(!S.words.some(w=>w.en.toLowerCase()==e.toLowerCase())){S.words.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),en:e,hu:h,h:[]});n++}});save();pushWords();wtxt=``;wmsg=`${n} új szó hozzáadva.`;show()}
+function delW(id){wtxt=document.getElementById(`wt`).value;const dw=S.words.find(w=>w.id==id);if(dw&&dw.cid)(S.wdel=S.wdel||[]).push(dw.cid);S.words=S.words.filter(w=>w.id!=id);save();pushWords();show()}
 function fromFile(i){const f=i.files[0];if(!f)return;wtxt=document.getElementById(`wt`).value;f.text().then(t=>{if(/\.json$/i.test(f.name)){try{const d=JSON.parse(t),a=Array.isArray(d)?d:(d.words||[]);t=a.map(x=>Array.isArray(x)?x.slice(0,2).join(` - `):`${x.en||x.angol||x.word||``} - ${x.hu||x.magyar||x.meaning||``}`).join(`\n`)}catch(e){}}
  wtxt=(wtxt?wtxt+`\n`:``)+t.trim();wmsg=`Fájl beolvasva. Ellenőrizd a listát, majd nyomd meg a Hozzáadást.`;show()})}
 async function fromImg(i){const f=i.files[0];if(!f)return;wtxt=document.getElementById(`wt`).value;const m=document.getElementById(`wm`);m.textContent=`Kép feldolgozása… (internet kell, első alkalommal tovább tart)`;
@@ -287,6 +288,91 @@ async function fromImg(i){const f=i.files[0];if(!f)return;wtxt=document.getEleme
  const R=await Tesseract.recognize(f,`eng+hun`,{logger:l=>{const e=document.getElementById(`wm`);if(e&&l.status==`recognizing text`)e.textContent=`Felismerés: ${Math.round(l.progress*100)}%`}});
  wtxt=(wtxt?wtxt+`\n`:``)+R.data.text.trim();wmsg=`Kész. A felismerés hibázhat: ellenőrizd és javítsd a szavakat, mielőtt hozzáadod.`}
  catch(e){wmsg=`Nem sikerült a képfelismerés (internet kell hozzá). Próbáld fájlból, vagy írd be a szavakat.`}show()}
-boot();
+
+let qt=0,hid=0,hts=0,fms=null,rid=``,pcode=``,pdata=null,sb=null,cm=``,cbusy=false;
+const uid=()=>crypto.randomUUID?crypto.randomUUID():`xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx`.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return (c==`x`?r:r&3|8).toString(16)});
+document.addEventListener(`visibilitychange`,()=>{if(document.hidden)hts=Date.now();else if(hts){hid+=Date.now()-hts;hts=0}});
+const CFG=()=>{try{const l=JSON.parse(localStorage.getItem(`szl_cloud`));if(l&&l.url&&l.key)return l}catch(e){}const c=window.SZL_CLOUD;return c&&c.url&&c.key?c:null};
+const LK=()=>{try{return JSON.parse(localStorage.getItem(`szl_link`))}catch(e){return null}};
+const setLK=v=>{try{v?localStorage.setItem(`szl_link`,JSON.stringify(v)):localStorage.removeItem(`szl_link`)}catch(e){}};
+const LQ=()=>{try{return JSON.parse(localStorage.getItem(`szl_q`))||[]}catch(e){return[]}};
+const enq=(t,d)=>{const L=LK();if(!L||L.role!=`child`)return;const q=LQ();q.push({t,d});try{localStorage.setItem(`szl_q`,JSON.stringify(q.slice(-3000)))}catch(e){}};
+const evt=(c,v)=>enq(`e`,{id:uid(),ts:new Date().toISOString(),subject:c.w?`en`:`math`,skill:c.s,item:c.k||null,ok:v==1,tries:tr+1,ms:fms,round_id:rid});
+const cmsg=t=>{cm=t;const e=document.getElementById(`cm`);if(e)e.textContent=t};
+const SN=Object.fromEntries(SK.map(s=>[s.id,s.n]));SN.en=`Angol szókincs`;
+const med=a=>{const x=a.filter(v=>v!=null).sort((p,q)=>p-q);return x.length?x[x.length>>1]:null};
+function lib(){return new Promise((ok,no)=>{if(window.supabase)return ok();const x=document.createElement(`script`);x.src=`https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.3`;x.onload=ok;x.onerror=()=>no(new Error(`A felhős könyvtár nem tölthető be (internet kell).`));document.head.appendChild(x)})}
+async function cli(){const c=CFG();if(!c)throw new Error(`Nincs beállítva a felhő.`);if(!sb){await lib();sb=window.supabase.createClient(c.url,c.key,{auth:{persistSession:true,autoRefreshToken:true}})}return sb}
+async function flush(){const L=LK();if(!L||L.role!=`child`||cbusy)return;const q=LQ();cbusy=true;
+ try{const c=await cli(),ev=q.filter(x=>x.t==`e`).slice(0,300),rd=q.filter(x=>x.t==`r`).slice(0,100),base=d=>({...d,family_id:L.family,profile_id:L.profile});
+  if(ev.length){const r=await c.from(`events`).upsert(ev.map(x=>({...base(x.d),device_id:L.dev})),{onConflict:`id`,ignoreDuplicates:true});if(r.error)throw r.error}
+  if(rd.length){const r=await c.from(`rounds`).upsert(rd.map(x=>base(x.d)),{onConflict:`id`,ignoreDuplicates:true});if(r.error)throw r.error}
+  const sent=new Set([...ev,...rd]);localStorage.setItem(`szl_q`,JSON.stringify(q.filter(x=>!sent.has(x))));
+  const st=await c.from(`profile_state`).upsert({profile_id:L.profile,family_id:L.family,data:S,updated_at:new Date().toISOString()});if(st.error)throw st.error;
+  localStorage.setItem(`szl_sync`,new Date().toISOString());cm=``;if(q.length>sent.size)setTimeout(flush,500)}
+ catch(e){cm=`Szinkron hiba: ${e.message||e}`}cbusy=false}
+async function pullWords(){const L=LK();if(!L)return;try{const c=await cli(),r=await c.from(`words`).select(`id,en,hu`);if(r.error)throw r.error;const ids=new Set(r.data.map(d=>d.id));
+ r.data.forEach(d=>{const w=S.words.find(x=>x.cid==d.id)||S.words.find(x=>!x.cid&&x.en.toLowerCase()==d.en.toLowerCase());if(w){w.cid=d.id;w.en=d.en;w.hu=d.hu}else S.words.push({id:uid(),cid:d.id,en:d.en,hu:d.hu,h:[]})});
+ S.words=S.words.filter(w=>!w.cid||ids.has(w.cid));save()}catch(e){cm=`Szinkron hiba: ${e.message||e}`}}
+async function pushWords(){const L=LK();if(!L||L.role!=`parent`)return;try{const c=await cli(),nw=S.words.filter(w=>!w.cid);
+ if(nw.length){const r=await c.from(`words`).insert(nw.map(w=>({family_id:L.family,profile_id:L.profile,en:w.en,hu:w.hu}))).select(`id`);if(r.error)throw r.error;r.data.forEach((d,k)=>nw[k].cid=d.id)}
+ if((S.wdel||[]).length){const r=await c.from(`words`).delete().in(`id`,S.wdel);if(r.error)throw r.error;S.wdel=[]}save()}catch(e){wmsg=`Felhő hiba: ${e.message||e}`;show()}}
+async function syncNow(){cmsg(`Szinkron…`);await flush();await pullWords();cmsg(cm||`Kész.`);show()}
+async function restore(){try{const c=await cli(),r=await c.from(`profile_state`).select(`data`).eq(`profile_id`,LK().profile).maybeSingle();if(r.error)throw r.error;if(!r.data)return cmsg(`Nincs mentett állapot.`);S=Object.assign(S,r.data.data);save();cmsg(`Visszaállítva.`)}catch(e){cmsg(e.message||String(e))}}
+async function cout(){try{const c=await cli();await c.auth.signOut()}catch(e){}setLK(null);try{localStorage.removeItem(`szl_q`)}catch(e){}role=null;pAuth=false;V=U()?`login`:`start`;show()}
+function saveCfg(){const u=gv(`cu`).trim().replace(/\/+$/,``),k=gv(`ck`).trim();if(!/^https:\/\//.test(u)||k.length<20)return cmsg(`Add meg az https:// kezdetű URL-t és a kulcsot.`);localStorage.setItem(`szl_cloud`,JSON.stringify({url:u,key:k}));sb=null;cm=`Mentve.`;show()}
+async function claim(){const code=gv(`pc`).replace(/\D/g,``),pe=document.getElementById(`pp`),pin=pe?pe.value:``;if(code.length!=8)return cmsg(`A kód 8 jegyű.`);if(!U()&&!/^\d{4}$/.test(pin))return cmsg(`Adj meg egy 4 jegyű szülői PIN-kódot is.`);cmsg(`Egy pillanat…`);
+ try{const c=await cli();if(!(await c.auth.getSession()).data.session){const a=await c.auth.signInAnonymously();if(a.error)throw a.error}
+  const r=await c.rpc(`claim_pairing`,{p_code:code});if(r.error)throw r.error;const pr=await c.from(`profiles`).select(`name`).eq(`id`,r.data.profile_id).maybeSingle();
+  setLK({role:`child`,family:r.data.family_id,profile:r.data.profile_id,dev:uid()});
+  if(!U()){const ps=salt(),cs=salt();localStorage.setItem(`szl_users`,JSON.stringify({parent:{s:ps,h:await hs(pin,ps)},child:{name:(pr.data&&pr.data.name)||`Gyerek`,s:cs,h:``}}));localStorage.removeItem(`szl_role`)}
+  await pullWords();flush();cm=`Összekötve ✓`;V=pAuth?`cloud`:`login`;show()}
+ catch(e){const m=e.message||String(e);cmsg(/invalid|expired/.test(m)?`Érvénytelen vagy lejárt kód.`:m)}}
+async function pauth(mode){const em=gv(`em`).trim(),pw=gv(`pw`);if(!em||pw.length<6)return cmsg(`Adj meg e-mail-címet és legalább 6 karakteres jelszót.`);cmsg(`Egy pillanat…`);
+ try{const c=await cli();if(mode==`up`){const r=await c.auth.signUp({email:em,password:pw});if(r.error)throw r.error;if(!r.data.session)return cmsg(`Elküldtük a megerősítő e-mailt. Kattints a linkre, aztán lépj be itt.`)}
+  else{const r=await c.auth.signInWithPassword({email:em,password:pw});if(r.error)throw r.error}
+  await pready()}catch(e){cmsg(e.message||String(e))}}
+async function pready(){const c=await cli(),u=(await c.auth.getUser()).data.user,m=(await c.from(`members`).select(`family_id,role,profile_id`).eq(`user_id`,u.id).maybeSingle()).data;
+ if(!m){cm=``;V=`cfam`;return show()}
+ const pr=(await c.from(`profiles`).select(`id,name`).order(`created_at`)).data||[],o=LK();
+ setLK({role:`parent`,family:m.family_id,profile:(o&&o.profile)||(pr[0]&&pr[0].id),dev:(o&&o.dev)||uid()});role=`parent`;pAuth=true;V=`pdash`;pdata=null;cm=``;show()}
+async function mkFam(){const n=gv(`fn`).trim(),g=parseInt(gv(`fg`))||null;if(!n)return cmsg(`Add meg a gyerek nevét.`);
+ try{const c=await cli(),r=await c.rpc(`create_family`,{fam_name:`Család`,child_name:n,child_grade:g});if(r.error)throw r.error;await pready()}catch(e){cmsg(e.message||String(e))}}
+async function mkCode(){try{const c=await cli(),r=await c.rpc(`create_pairing`,{p_profile:LK().profile});if(r.error)throw r.error;pcode=r.data;show()}catch(e){pcode=``;cm=e.message||String(e);show()}}
+function selP(id){setLK({...LK(),profile:id});pdata=null;pcode=``;show()}
+async function loadDash(){const L=LK();try{const c=await cli(),since=new Date(Date.now()-30*864e5).toISOString(),
+ [pf,ev,rd]=await Promise.all([c.from(`profiles`).select(`id,name,grade`).order(`created_at`),c.from(`events`).select(`ts,subject,skill,item,ok,tries,ms`).eq(`profile_id`,L.profile).gte(`ts`,since).order(`ts`,{ascending:false}).limit(5000),c.from(`rounds`).select(`ts,subject,n,correct,stars`).eq(`profile_id`,L.profile).order(`ts`,{ascending:false}).limit(5)]);
+ if(ev.error)throw ev.error;pdata={pf:pf.data||[],ev:ev.data||[],rd:rd.data||[]}}catch(e){pdata={err:e.message||String(e)}}show()}
+const cfgBlock=()=>CFG()?``:`<div class="c"><h2>Felhő beállítása</h2><p class="mu">Supabase Project URL és nyilvános kulcs.</p><input class="f" id="cu" type="text" placeholder="https://…supabase.co"><input class="f" id="ck" type="text" placeholder="Nyilvános kulcs"><button class="b s" onclick="saveCfg()">Mentés</button></div>`;
+function pdashView(){const L=LK();
+ if(!pdata){loadDash();$.innerHTML=`<h1>Áttekintés</h1><p class="mu">Betöltés…</p>`;return}
+ if(pdata.err){$.innerHTML=`<h1>Áttekintés</h1><div class="fb tp">Hiba: ${esc(pdata.err)}<br>Ha a projekt szünetel, indítsd újra a Supabase felületén.</div><button class="b" onclick="pdata=null;show()">Újra</button><button class="l" onclick="cout()">Kilépés</button>`;return}
+ const e=pdata.ev,now=Date.now(),D=864e5,t=x=>now-new Date(x.ts).getTime(),A=e.filter(x=>t(x)<7*D),B=e.filter(x=>t(x)>=7*D&&t(x)<14*D),sg=n=>n>=0?`+${n}`:`${n}`;
+ const row=k=>{const a=A.filter(x=>x.skill==k),b=B.filter(x=>x.skill==k),pa=Math.round(a.filter(x=>x.ok).length/a.length*100),pb=b.length?Math.round(b.filter(x=>x.ok).length/b.length*100):null,
+  ma=med(a.filter(x=>x.ok).map(x=>x.ms)),mb=med(b.filter(x=>x.ok).map(x=>x.ms)),dt=ma&&mb?Math.round((ma/mb-1)*100):null;
+  return `<div class="row"><span>${esc(SN[k]||k)}</span><span>${a.length} db · ${pa}%${pb==null?``:` (${sg(pa-pb)})`} · ${ma?(ma/1000).toFixed(1)+` mp`:`–`}${dt==null?``:` (${sg(dt)}%)`}</span></div>`};
+ const old=e.filter(x=>t(x)>=3*D&&x.ok&&x.ms&&x.item),r3=e.filter(x=>t(x)<3*D&&x.ok&&x.ms&&x.item),fast={};
+ r3.forEach(x=>{const o=old.filter(y=>y.item==x.item).map(y=>y.ms);if(o.length>=5){const m=med(o);if(x.ms<=m*.5){const r=x.ms/m;if(!fast[x.item]||r<fast[x.item].r)fast[x.item]={r,ms:x.ms,m}}}});
+ const fl=Object.entries(fast).sort((a,b)=>a[1].r-b[1].r).slice(0,6),bad=e.filter(x=>t(x)<3*D&&!x.ok),rush=bad.filter(x=>x.ms&&x.ms<1500),wk={};
+ e.filter(x=>t(x)<14*D&&!x.ok&&x.item).forEach(x=>wk[x.item]=(wk[x.item]||0)+1);const wl=Object.entries(wk).sort((a,b)=>b[1]-a[1]).slice(0,8),days=new Set(e.filter(x=>t(x)<14*D).map(x=>x.ts.slice(0,10))).size,nm=(pdata.pf.find(p=>p.id==L.profile)||{}).name||``;
+ $.innerHTML=`<h1>Áttekintés${nm?`: ${esc(nm)}`:``}</h1>${pdata.pf.length>1?pdata.pf.map(p=>`<button class="b ${p.id==L.profile?``:`s`}" onclick="selP('${p.id}')">${esc(p.name)}</button>`).join(``):``}
+ <div class="c"><div class="row"><span>Gyakorló napok (14 nap)</span><b>${days}</b></div><div class="row"><span>Utolsó kör</span><b>${pdata.rd[0]?new Date(pdata.rd[0].ts).toLocaleDateString(`hu-HU`):`–`}</b></div></div>
+ <div class="c"><h2>Elmúlt 7 nap</h2><p class="mu">Készségenként: db · elsőre jó % (változás az előző héthez) · medián idő (változás)</p>${sk(A)}</div>
+ ${fl.length?`<div class="c"><h2>⚡ Gyors megoldások (3 nap)</h2>${fl.map(([k,v])=>`<div class="row"><span>${esc(k)}</span><span>${(v.ms/1000).toFixed(1)} mp (szokásos: ${(v.m/1000).toFixed(1)} mp)</span></div>`).join(``)}<p class="mu" style="margin:6px 0 0">Ezeket a gyerek a saját szokásos idejének felénél gyorsabban, elsőre jól oldotta meg.</p></div>`:``}
+ ${rush.length>=5&&rush.length/bad.length>=.3?`<div class="fb tp">Az utóbbi napokban sok gyors, de rossz válasz volt. Lehet, hogy elsietett vagy tippelt.</div>`:``}
+ ${wl.length?`<div class="c"><h2>Még bizonytalan (14 nap)</h2>${wl.map(([k,n])=>`<div class="row"><span>${esc(k)}</span><b>${n}×</b></div>`).join(``)}</div>`:``}
+ ${pdata.rd.length?`<div class="c"><h2>Legutóbbi körök</h2>${pdata.rd.map(r=>`<div class="row"><span>${new Date(r.ts).toLocaleDateString(`hu-HU`)} · ${r.subject==`en`?`angol`:`matek`}</span><b>${r.correct}/${r.n} ${`⭐`.repeat(r.stars)}</b></div>`).join(``)}</div>`:``}
+ ${pcode?`<div class="c"><div class="big" style="letter-spacing:6px">${pcode}</div><p class="mu">15 percig érvényes. A gyerek eszközén: Szülői nézet → Felhő → Párosítás.</p></div>`:``}${cm?`<div class="fb tp">${esc(cm)}</div>`:``}
+ <button class="b" onclick="mkCode()">🔗 Gyerek eszköz párosítása</button><button class="b s" onclick="pullWords().then(()=>{V='words';show()})">📝 Angol szavak</button><button class="b s" onclick="pdata=null;show()">🔄 Frissítés</button><button class="l" onclick="cout()">Kilépés</button>`;
+ function sk(A){const ks=[...new Set(A.map(x=>x.skill))];return ks.length?ks.map(row).join(``):`<p class="mu">Még nincs adat erről a hétről.</p>`}}
+function cloudShow(){const msg=`<p id="cm" class="mu" style="color:var(--tp);min-height:20px">${esc(cm)}</p>`;
+ if(V==`start`){$.innerHTML=`<h1>Üdv!</h1><p class="mu">Hogyan használod ezt az eszközt?</p><button class="b" onclick="V='cauth';show()">👪 Szülő vagyok (felhős fiók)</button><button class="b s" onclick="V='cpair';show()">🧒 Ez a gyerek eszköze (párosítás kóddal)</button><button class="b s" onclick="V='setup';show()">Csak ezen az eszközön, felhő nélkül</button>`;return}
+ if(V==`cauth`){$.innerHTML=`<h1>Szülői belépés</h1>${cfgBlock()}<div class="c"><input class="f" id="em" type="email" placeholder="E-mail-cím" autocomplete="email"><input class="f" id="pw" type="password" placeholder="Jelszó (legalább 6 karakter)" autocomplete="current-password"></div>${msg}<button class="b" onclick="pauth('in')">Belépés</button><button class="b s" onclick="pauth('up')">Új fiók létrehozása</button><button class="l" onclick="V='start';show()">Vissza</button>`;return}
+ if(V==`cfam`){$.innerHTML=`<h1>Család létrehozása</h1><p class="mu">Az első gyerekprofil adatai.</p><div class="c"><input class="f" id="fn" type="text" placeholder="Gyerek neve"><input class="f" id="fg" type="text" inputmode="numeric" placeholder="Osztály (pl. 4)"></div>${msg}<button class="b" onclick="mkFam()">Létrehozás</button>`;return}
+ if(V==`pdash`){pdashView();return}
+ const L=LK(),qn=LQ().length,sy=localStorage.getItem(`szl_sync`);
+ $.innerHTML=`<h1>☁️ Felhő</h1>${cfgBlock()}${L?`<div class="c"><div class="row"><b>Összekötve ✓</b><span>${L.role==`child`?`gyerek eszköz`:`szülő`}</span></div><p class="mu" style="margin:6px 0 0">Utolsó szinkron: ${sy?new Date(sy).toLocaleString(`hu-HU`):`még nem volt`}. Várakozó adat: ${qn}.</p></div>${msg}<button class="b" onclick="syncNow()">Szinkron most</button>${L.role==`child`?`<button class="b s" onclick="restore()">Visszaállítás a felhőből</button>`:``}<button class="b s" onclick="cout()">Kapcsolat bontása</button>`:`<div class="c"><h2>Párosítás kóddal</h2><p class="mu">A szülő telefonján kérj kódot (Áttekintés → Gyerek eszköz párosítása), és írd be ide.</p><input class="f" id="pc" type="text" inputmode="numeric" maxlength="8" placeholder="8 jegyű kód">${U()?``:`<input class="f" id="pp" type="password" inputmode="numeric" maxlength="4" placeholder="Új szülői PIN (4 jegy)">`}</div>${msg}<button class="b" onclick="claim()">Párosítás</button>`}<button class="l" onclick="V='${V==`cpair`?`start`:`parent`}';show()">Vissza</button>`}
+function cloudBoot(){const L=LK();if(L&&L.role==`child`)setTimeout(async()=>{await flush();await pullWords();if(V==`home`)show()},1200)}
+boot();cloudBoot();
 if(`serviceWorker` in navigator)addEventListener(`load`,()=>navigator.serviceWorker.register(`sw.js`).catch(()=>{}));
 </script></body></html>
