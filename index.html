@@ -50,7 +50,7 @@ input{width:100%;min-height:62px;font:inherit;font-size:30px;font-weight:700;tex
 .big{font-size:40px;font-weight:800;text-align:center;margin:6px 0}
 .st{display:flex;flex-wrap:wrap;gap:8px;font-size:30px;margin:4px 0 0}.st span{width:46px;height:46px;display:grid;place-items:center;border-radius:12px;background:var(--ac2)}.st .x{opacity:.45;font-size:20px;color:var(--mu)}
 @media (prefers-reduced-motion:no-preference){.fb{animation:p .25s ease-out}@keyframes p{from{transform:scale(.97);opacity:.4}}}
-</style></head><body><main id="app"></main>
+textarea.f{width:100%;font:inherit;font-size:16px;padding:10px;border-radius:12px;border:2px solid var(--bd);background:var(--card);color:var(--tx);margin:0 0 10px}.opts{display:grid;gap:8px;margin:0 0 8px}.opts .b{margin:0;font-size:20px;min-height:54px}.stg{display:flex;align-items:flex-end;justify-content:center;gap:4px;height:54px}.dwr{position:relative;display:inline-block;font-size:46px;line-height:54px}.gh{position:absolute;top:-.15em;left:50%;transform:translateX(-50%);font-size:.5em;line-height:1}.gf{position:absolute;top:.35em;left:50%;transform:translateX(-50%);font-size:.48em;line-height:1}.bm{display:inline-flex;flex-direction:column;align-items:center;line-height:1;font-size:32px;animation:bnc .5s ease-in-out infinite}.bm small{font-size:16px}@keyframes bnc{50%{transform:translateY(-8px)}}@media (prefers-reduced-motion:reduce){.dwr,.bm{animation:none!important}}</style></head><body><main id="app"></main>
 <script>
 const r=(a,b)=>a+Math.floor(Math.random()*(b-a+1)),pick=a=>a[r(0,a.length-1)];
 const mh=(a,b)=>{if(a==10||b==10)return `Tízzel szorozni könnyű: a szám mögé írj egy nullát.`;
@@ -110,7 +110,7 @@ const SK=[
  if(t==5){const c=r(5,a+b-1);return {q:`A boltban ${a} darab piros és ${b} darab kék labda volt. ${c} darabot eladtak. Hány darab labda maradt?`,a:a+b-c,h:`${T} Két lépés: előbb számold ki, mennyi volt összesen (${a} + ${b}), aztán vond le az eladottat.`}}
  return {q:`Dóri ${a} darab kártyát gyűjtött, Peti ${b} darabbal többet. Hány darab kártyája van Petinek?`,a:a+b,h:`${T} A „többet” itt hozzáadást jelent: ${a} + ${b}.`}}}
 ];SK.slice(0,7).forEach(s=>s.core=1);const fmt=m=>`${Math.floor(m/60)}:${String(m%60).padStart(2,`0`)}`;
-let S={hist:{},miss:{},days:[],diag:false,pts:0,steps:0,items:[],mute:false};
+let S={hist:{},miss:{},days:[],diag:false,pts:0,steps:0,items:[],words:[],stars:0,gear:[],eq:{head:``,face:``},gearN:0,band:[],mute:false};
 const DB={get:()=>localStorage.getItem(`szamolos`),set:v=>localStorage.setItem(`szamolos`,v)};
 try{const t=DB.get();if(t)S=Object.assign(S,JSON.parse(t))}catch(e){}
 const save=()=>{try{DB.set(JSON.stringify(S))}catch(e){}};
@@ -128,10 +128,25 @@ const WD=[
 {n:`Világűr`,c:`#6a4bd6`,L:[`🚀`,`🌙`,`👽`,`☄️`,`🛸`,`🪐`,`⭐`,`🛰️`,`🌌`,`🏆`],I:[`🌙`,`☄️`,`👽`,`🪐`,`🛰️`]},
 {n:`Tenger alatt`,c:`#1c9fb0`,L:[`🏝️`,`🐠`,`🐢`,`🪸`,`🦈`,`🐙`,`🐚`,`🦀`,`🚢`,`🔱`],I:[`🐠`,`🐢`,`🪸`,`🐚`,`🐙`]}];
 const gw=n=>WD[Math.floor(n/10)%WD.length];
-const trail=d=>{const t=d&&S.steps&&S.steps%10==0?S.steps-1:S.steps,w=gw(t),p=t%10;
+const trail=n=>{const t=n==null?S.steps:n,w=gw(t),p=t%10;
  return `<div class="trail" style="--wc:${w.c}">${[0,1,2,3,4,9,8,7,6,5].map(k=>`<span class="${k<p?`v`:k==p?`me`:``}">${k==p?DZ:k==9?`🎁`:w.L[k]}</span>`).join(``)}</div>`};
-function EV(){const w=gw(S.steps-1),t=S.steps%10==0,it=t?w.L[9]:pick(w.I),nw=!S.items.includes(it);if(nw)S.items.push(it);fd=it;
- ev=t?`Megvan a kincs! +50 pont. Új világ: ${gw(S.steps).n}!`:`A dínó talált valamit${nw?`, és bekerült a gyűjteményedbe!`:`. Ez már megvan, de jó látni!`}`;if(t)aw(50)}
+let rw=[],stn=1,wd=0;
+const BAND=[{id:`s`,e:`🦕`,i:`🎤`,n:`Énekes`,at:5},{id:`g`,e:`🦎`,i:`🎸`,n:`Gitáros`,at:4},{id:`p`,e:`🐊`,i:`🪘`,n:`Ütős`,at:6},{id:`x`,e:`🐢`,i:`🎷`,n:`Szaxofonos`,at:7},{id:`d`,e:`🐲`,i:`🎧`,n:`DJ`,at:8}];
+const GEAR=[{e:`🤠`,s:`head`,n:`Felfedezőkalap`},{e:`🕶️`,s:`face`,n:`Napszemüveg`},{e:`🎩`,s:`head`,n:`Cilinder`},{e:`🥽`,s:`face`,n:`Szemüveg`},{e:`👑`,s:`head`,n:`Korona`},{e:`🧢`,s:`head`,n:`Sapka`},{e:`🎓`,s:`head`,n:`Diplomás kalap`},{e:`🎀`,s:`head`,n:`Masni`}];
+const hasB=id=>S.band.includes(id);
+function gift(){const g=GEAR[S.gearN%GEAR.length];S.gearN++;if(!S.gear.includes(g.e)){S.gear.push(g.e);if(!S.eq[g.s])S.eq[g.s]=g.e}return g}
+function finishRound(){rw=[];wd=0;if(diag){stn=0;return}
+ const rt=got/Q.length,o=S.steps;stn=rt>=.85?3:rt>=.6?2:1;S.stars=(S.stars||0)+stn;S.steps+=stn;
+ for(let b=o+1;b<=S.steps;b++){if(b%5)continue;
+  if(b%10==5){const g=gift();rw.push({e:g.e,t:`Félúti ajándék: ${g.n}!`})}
+  else{wd=b;const m=BAND[b/10-1];if(m&&!hasB(m.id)){S.band.push(m.id);rw.push({e:m.e+m.i,t:`Kincs: új zenekari tag, ${m.n}! Új hangszer a zenében.`})}else{const g=gift();rw.push({e:`🎁`+g.e,t:`Kincs: ${g.n}!`})}}}
+ if(rw.length){setTimeout(fan,400);burst([`💎`,`🎉`,`⭐`,`🏆`])}}
+const dino=(l,z)=>`<span class="dwr d${l}"${z?` style="font-size:${z}px;line-height:${z*1.2}px"`:``}><span class="gh">${S.eq.head||``}</span>${DZ}<span class="gf">${S.eq.face||``}</span></span>`;
+function cards(){const st=streak(),w=gw(S.steps),p=S.steps%10,left=(p<5?5:10)-p;
+ return `<div class="c" style="border:2px solid ${w.c}"><div class="row"><b>${w.n}</b><span>${p} / 10</span></div>${trail()}<p class="mu" style="margin:6px 0 0"><b>⭐ = 1 lépés.</b> Még ${left} lépés ${p<5?`a félúti ajándékig`:`a kincsig`}.</p></div>
+ <div class="c"><div class="row"><b>Dínó zenekar</b><button class="l" onclick="V='wardrobe';show()">👕 Gardrób</button></div><div class="st">${BAND.map(b=>hasB(b.id)?`<span>${b.e}</span>`:`<span class="x">?</span>`).join(``)}</div><p class="mu" style="margin:8px 0 0">${st?`${st} napja gyakorolsz egyfolytában.`:`Ma még nem gyakoroltál.`}</p></div>`}
+function wardrobeView(){$.innerHTML=`<h1>Gardrób</h1><p class="mu">Koppints, és a dínó felveszi.</p><div class="c" style="text-align:center;padding-top:30px">${dino(1,72)}</div><div class="kp5">${GEAR.map(g=>S.gear.includes(g.e)?`<button class="b ${S.eq[g.s]==g.e?``:`s`}" onclick="eqp('${g.e}')">${g.e}</button>`:`<button class="b s" disabled>?</button>`).join(``)}</div><button class="b" onclick="V='home';show()">Kész</button>`}
+function eqp(e){const g=GEAR.find(x=>x.e==e);S.eq[g.s]=S.eq[g.s]==e?``:e;save();show()}
 let ans=``,seq=null,stp=0;
 const DZ=`🦖`,fq=n=>261.63*Math.pow(2,n/12),ac=()=>{AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(AC.state==`suspended`)AC.resume();return AC};
 function vox(f,d){try{const a=ac(),n=a.currentTime,o=a.createOscillator(),g=a.createGain(),b1=a.createBiquadFilter(),b2=a.createBiquadFilter(),l=a.createOscillator(),lg=a.createGain();
@@ -146,13 +161,13 @@ function tick(){if(!cb||V!=`quiz`){clearInterval(seq);seq=null;return}if(S.mute)
  if(s%2==1)snd(7000,.03,`square`,0,.025);
  if(L>=2&&s%2==0)snd(fq([0,0,7,5][(s>>1)&3]-12),.26,`triangle`,0,.22);
  if(L>=3&&s%2==0)snd(fq(pick(sc)+12),.22,`triangle`,0,.12);
- if(L>=5&&s%4==2)vox(fq(pick([0,4,7])),.5);
- if(L>=8&&s%2==1)snd(fq(pick(sc)+24),.1,`square`,0,.04)}
+ if(L>=5&&s%4==2&&hasB(`s`))vox(fq(pick([0,4,7])),.5);if(L>=4&&s%4==3&&hasB(`g`))snd(fq(7),.2,`sawtooth`,0,.07);if(L>=6&&s%4==2&&hasB(`p`))snd(2500,.05,`square`,0,.04);if(L>=7&&(s==2||s==6)&&hasB(`x`))snd(fq(pick([4,7,9])+12),.35,`sawtooth`,0,.08);
+ if(L>=8&&s%2==1&&hasB(`d`))snd(fq(pick(sc)+24),.1,`square`,0,.04)}
 const songOn=()=>{if(!seq){stp=0;seq=setInterval(tick,240)}};
 function key(k){if(locked)return;if(k==`✓`)return sub();if(k==`⌫`)ans=ans.slice(0,-1);else if(ans.length<5)ans+=k;const e=document.getElementById(`ans`);if(e)e.innerHTML=ans||`&nbsp;`}
 document.addEventListener(`keydown`,e=>{if(V!=`quiz`)return;if(/^\d$/.test(e.key))key(e.key);else if(e.key==`Backspace`)key(`⌫`);else if(e.key==`Enter`)key(`✓`)});
-const combo=()=>{const l=cb>=8?4:cb>=5?3:cb>=3?2:cb>=1?1:0;
- return `<div class="stage">${l?`<span class="nt">${l>=2?`🎵`:``}</span><span class="dz d${l}">${DZ}</span><span class="nt n2">${l>=3?`🎶`:``}</span>`:`<span class="dz d0">${DZ}</span>`}<div class="cap">${cb>=2?`${cb>=8?`TÖKÉLETES! `:cb>=5?`SZUPER! `:cb>=3?`SOROZAT! `:``}${cb} egymás után`:`&nbsp;`}</div></div>`};
+const combo=()=>{const l=cb>=8?4:cb>=5?3:cb>=3?2:cb>=1?1:0,ac=BAND.filter(b=>hasB(b.id)&&cb>=b.at),m=b=>`<span class="bm">${b.e}<small>${b.i}</small></span>`;
+ return `<div class="stage"><div class="stg">${ac.filter((_,k)=>k%2==0).map(m).join(``)}${dino(l)}${ac.filter((_,k)=>k%2==1).map(m).join(``)}</div><div class="cap">${cb>=2?`${cb>=8?`TÖKÉLETES! `:cb>=5?`SZUPER! `:cb>=3?`SOROZAT! `:``}${cb} egymás után`:`&nbsp;`}</div></div>`};
 function startFree(id){diag=false;Q=[];add(SK.find(s=>s.id==id),8);go()}const lv=p=>Math.floor(p/100);const ST=[`🦊`,`🚀`,`🐙`,`🦄`,`🐲`,`🦖`,`🪐`,`🏆`];const mast=id=>(S.hist[id]||[]).length>=8&&mean(id)>=.9;
 const today=()=>new Date().toLocaleDateString(`sv`);
 const streak=()=>{const set=new Set(S.days);let d=new Date();if(!set.has(d.toLocaleDateString(`sv`)))d.setDate(d.getDate()-1);let n=0;while(set.has(d.toLocaleDateString(`sv`))){n++;d.setDate(d.getDate()-1)}return n};
@@ -161,42 +176,41 @@ const add=(sk,n)=>{let c=0,g=0;while(c<n&&g<200){g++;const x=sk.g();if(Q.some(y=
 function startDiag(){diag=true;Q=[];SK.filter(s=>s.core).forEach(s=>add(s,2));Q.sort(()=>Math.random()-.5);go()}
 function startPractice(){diag=false;Q=[];const has=s=>(S.hist[s.id]||[]).length>0,pool=SK.filter(s=>s.core||has(s)),o=pool.slice().sort((a,b)=>mean(a.id)-mean(b.id)),ex=SK.filter(s=>!s.core).sort((a,b)=>(S.hist[a.id]||[]).length-(S.hist[b.id]||[]).length)[0],st=pool.filter(has).sort((a,b)=>mean(b.id)-mean(a.id))[0]||o[o.length-1];add(st,2);add(o[0],4);if(ex&&ex!==o[0]&&ex!==st)add(ex,2);else add(o[0],2);go()}
 function go(){ans=``;i=0;tr=0;got=0;sp=0;cb=0;p0=S.pts;fb=``;hint=``;locked=false;V=`quiz`;show()}
-function rec(c,v){const h=(S.hist[c.s]||[]);h.push(v);S.hist[c.s]=h.slice(-10);save()}
+function rec(c,v){const h=(S.hist[c.s]||[]);h.push(v);S.hist[c.s]=h.slice(-10);if(c.w){const w=S.words.find(x=>x.id==c.w);if(w)w.h=(w.h||[]).concat(v).slice(-6)}save()}
 function miss(c){if(c.k){S.miss[c.k]=(S.miss[c.k]||0)+1;save()}}
 function sub(){if(locked)return;const v=ans.trim();if(v==``)return;ans=``;const c=Q[i],ok=parseInt(v,10)===c.a;
- if(ok){if(tr==0){got++;cb++;songOn();const bn=cb%3==0?5:0;aw(10+bn);ft=bn?`Sorozat: ${cb} egymás után! ✓ +${10+bn}`:`Ügyes! ✓ +10`;if(cb==3||cb==5||cb==8){fan();burst(cb>=8?[`🌟`,`🎉`,`🔥`,`🏆`]:cb>=5?[`🎉`,`⭐`,`🔥`]:[`⭐`,`✨`])}else ding();rec(c,1);if(c.k&&S.miss[c.k]>0){S.miss[c.k]--;save()}}else{cb=0;aw(5);ft=`Megvan! ✓ +5`;snd(560,.15,`triangle`);rec(c,0);miss(c)}fb=`ok`;locked=true;show();setTimeout(next,tr==0?650:900)}
+ if(ok){if(tr==0){got++;cb++;songOn();const bn=cb%3==0?5:0;aw(10+bn);ft=bn?`Sorozat! ✓`:`Ügyes! ✓`;if(cb==3||cb==5||cb==8){fan();burst(cb>=8?[`🌟`,`🎉`,`🔥`,`🏆`]:cb>=5?[`🎉`,`⭐`,`🔥`]:[`⭐`,`✨`])}else ding();rec(c,1);if(c.k&&S.miss[c.k]>0){S.miss[c.k]--;save()}}else{cb=0;aw(5);ft=`Megvan! ✓`;snd(560,.15,`triangle`);rec(c,0);miss(c)}fb=`ok`;locked=true;show();setTimeout(next,tr==0?650:900)}
  else if(diag){cb=0;rec(c,0);miss(c);next()}
  else if(tr==0){tr=1;hint=c.h;fb=`tp`;snd(300,.18,`sine`,0,.1,220);show()}
  else{cb=0;rec(c,0);miss(c);fb=`ans`;locked=true;show();setTimeout(next,1900)}}
-function next(){ans=``;i++;tr=0;fb=``;hint=``;locked=false;if(i>=Q.length){const t=today();if(!S.days.includes(t)){S.days.push(t);aw(20)}if(diag)S.diag=true;S.steps++;EV();save();V=`done`;boing();if(S.steps%10==0){setTimeout(fan,500);burst([`💎`,`🎉`,`⭐`,`🏆`])}}show()}
-function show(){if(authView())return;
+function next(){ans=``;i++;tr=0;fb=``;hint=``;locked=false;if(i>=Q.length){const t=today();if(!S.days.includes(t)){S.days.push(t);aw(20)}if(diag)S.diag=true;finishRound();save();V=`done`;boing()}show()}
+function show(){if(authView())return;if(V==`home`&&role==`child`&&!subj)V=`subj`;if(V==`subj`)return subjView();if(V==`home`&&subj==`en`)return homeEn();if(V==`words`)return wordsView();if(V==`wardrobe`)return wardrobeView();
  if(V==`home`){const st=streak();
   $.innerHTML=`<h1>Számolós</h1><p class="mu">${role==`child`&&U()?`Szia, ${U().child.name}! `:``}Napi 10 perc, egy dolog egyszerre.</p>
-  <div class="c"><div class="row"><b>Szint ${lv(S.pts)+1}</b><span>${S.pts} pont</span></div><div class="bar"><i style="width:${S.pts%100}%"></i></div><div class="st">${ST.map((e,k)=>k<lv(S.pts)?`<span>${e}</span>`:`<span class="x">?</span>`).join(``)}</div><p class="mu" style="margin:12px 0 0">Még ${100-S.pts%100} pont a következő matricáig. ${st?`${st} napja gyakorolsz egyfolytában.`:`Ma még nem gyakoroltál.`}</p></div>
-  <div class="c" style="border:2px solid ${gw(S.steps).c}"><div class="row"><b>${gw(S.steps).n}</b><span>${S.steps%10} / 10 lépés</span></div>${trail()}<p class="mu" style="margin:6px 0 0">Minden kör egy lépés. Útközben tárgyakat találsz, a végén kincs vár!</p>${S.items.length?`<p class="mu" style="margin:10px 0 4px">Gyűjteményed (${S.items.length}):</p><div class="st">${S.items.map(e=>`<span>${e}</span>`).join(``)}</div>`:``}</div>
+  ${cards()}
   <button class="b" onclick="${S.diag?`startPractice()`:`startDiag()`}">${S.diag?`Mai gyakorlás`:`Kezdjük egy kis felméréssel`}</button>${S.diag?`<button class="b s" onclick="V='free';show()">Szabad gyakorlás</button>`:``}
   ${S.diag?`<button class="b s" onclick="startDiag()">Új felmérés</button>`:`<p class="mu">Pár feladat, hogy lássuk, min érdemes kezdeni. Itt nincs rossz válasz, csak információ.</p>`}
-  ${S.diag?`<div class="c"><h2>Hol tartasz</h2>${SK.filter(s=>s.core||(S.hist[s.id]||[]).length).map(s=>`<div class="row"><span>${s.n}</span>${mast(s.id)?`<b>⭐ Mester</b>`:``}</div><div class="bar"><i style="width:${Math.round(mean(s.id)*100)}%"></i></div>`).join(``)}</div>`:``}
-  <div class="row"><button class="l" onclick="askParent()">Szülői nézet</button><button class="l" onclick="S.mute=!S.mute;save();show()">${S.mute?`🔇 Hang: ki`:`🔊 Hang: be`}</button><button class="l" onclick="logout()">Kilépés</button></div>`}
+  ${S.diag?`<div class="c"><h2>Hol tartasz</h2>${SK.filter(s=>s.core||(S.hist[s.id]||[]).length).map(s=>`<div class="row"><span>${s.n}</span></div><div class="bar"><i style="width:${Math.round(mean(s.id)*100)}%"></i></div>`).join(``)}</div>`:``}
+  <button class="l" onclick="subj=null;V='subj';show()">Tantárgyváltás</button><div class="row"><button class="l" onclick="askParent()">Szülői nézet</button><button class="l" onclick="S.mute=!S.mute;save();show()">${S.mute?`🔇 Hang: ki`:`🔊 Hang: be`}</button><button class="l" onclick="logout()">Kilépés</button></div>`}
  else if(V==`quiz`){const c=Q[i];
   $.innerHTML=`<div class="dots">${Q.map((_,k)=>`<i class="${k<i?`d`:``}"></i>`).join(``)}</div>
-  ${combo()}<div class="c"><div class="q${c.q.length>14?` t`:``}">${c.q}${c.q.length>14?``:` = ?`}</div></div>
-  <div class="fbw">${fb==`ok`?`<div class="fb ok">${ft}</div>`:fb==`tp`?`<div class="fb tp"><b>Majdnem!</b> Egy tipp: ${hint}<br>Próbáld újra.</div>`:fb==`ans`?`<div class="fb tp">A válasz: <b>${c.a}</b>. Semmi baj, megyünk tovább!</div>`:``}</div>
-  <div class="ans" id="ans">${ans||`&nbsp;`}</div>
-  <div class="kp">${[1,2,3,4,5,6,7,8,9,`⌫`,0,`✓`].map(k=>`<button class="b ${k==`✓`?``:`s`}" onclick="key('${k}')" aria-label="${k==`⌫`?`Törlés`:k==`✓`?`Kész`:k}">${k}</button>`).join(``)}</div>
+  ${combo()}<div class="c"><div class="q${c.q.length>14?` t`:``}">${c.q}${c.q.length>14||c.o?``:` = ?`}</div></div>
+  <div class="fbw">${fb==`ok`?`<div class="fb ok">${ft}</div>`:fb==`tp`?`<div class="fb tp"><b>Majdnem!</b> Egy tipp: ${hint}<br>Próbáld újra.</div>`:fb==`ans`?`<div class="fb tp">A válasz: <b>${c.o?esc(c.o[c.a]):c.a}</b>. Semmi baj, megyünk tovább!</div>`:``}</div>
+  ${c.o?`${c.say?`<button class="b s" onclick="say(Q[i].say)">🔊 Meghallgatom</button>`:``}<div class="opts">${c.o.map((t,k)=>`<button class="b s" onclick="opt(${k})">${esc(t)}</button>`).join(``)}</div>`:`<div class="ans" id="ans">${ans||`&nbsp;`}</div>
+  <div class="kp">${[1,2,3,4,5,6,7,8,9,`⌫`,0,`✓`].map(k=>`<button class="b ${k==`✓`?``:`s`}" onclick="key('${k}')" aria-label="${k==`⌫`?`Törlés`:k==`✓`?`Kész`:k}">${k}</button>`).join(``)}</div>`}
   <button class="l" onclick="V='home';show()">Kilépek</button>`;}
- else if(V==`done`){const w=SK.slice().sort((a,b)=>mean(a.id)-mean(b.id))[0];
-  $.innerHTML=`<div class="c"><div class="big">🎉</div><h2 style="text-align:center">${diag?`Kész a felmérés!`:`Mára ennyi, szép munka!`}</h2>
-  <p class="mu" style="text-align:center">${diag?`Most már tudjuk, min érdemes kezdeni.`:`Elsőre jó: ${got} / ${Q.length}. Holnap folytatjuk!`}</p><div class="big">+${sp} pont</div>${trail(1)}<div class="big pop">${fd}</div><p class="mu" style="text-align:center">${ev}</p>${lv(S.pts)>lv(p0)&&lv(p0)<ST.length?`<p style="text-align:center;font-size:18px">Új szint! Új matrica: <span style="font-size:34px">${ST[Math.min(lv(S.pts),ST.length)-1]}</span></p>`:``}</div>
-  <button class="b" onclick="V='home';show()">Vissza</button>`}
+ else if(V==`done`){const p=S.steps%10,wl=wd?gw(wd-1):gw(S.steps),left=(p<5?5:10)-p;
+ $.innerHTML=diag?`<div class="c"><div class="big">🎉</div><h2 style="text-align:center">Kész a felmérés!</h2><p class="mu" style="text-align:center">Most már tudjuk, min érdemes kezdeni.</p></div><button class="b" onclick="V='home';show()">Vissza</button>`
+ :`<div class="c"><div class="big pop">${`⭐`.repeat(stn)}${`☆`.repeat(3-stn)}</div><p class="mu" style="text-align:center;margin:0"><b>Elsőre jó: ${got} / ${Q.length}</b></p><p style="text-align:center;margin:8px 0 0">${stn} csillag = <b>+${stn} lépés</b></p></div>${rw.map(x=>`<div class="fb ok pop" style="font-size:17px"><span style="font-size:28px">${x.e}</span> ${x.t}</div>`).join(``)}<div class="c" style="border:2px solid ${wl.c}"><div class="row"><b>${wl.n}</b></div>${trail(wd?wd-1:undefined)}<p class="mu" style="margin:6px 0 0">${wd?`Megvan a kincs! Új világ következik: ${gw(S.steps).n}.`:`Még ${left} lépés ${p<5?`a félúti ajándékig`:`a kincsig`}.`}</p></div><button class="b" onclick="V='home';show()">Vissza</button>`}
  else if(V==`free`){$.innerHTML=`<h1>Szabad gyakorlás</h1><p class="mu">Válassz, mit szeretnél gyakorolni. 8 feladat jön.</p>${SK.map(s=>`<button class="b s" onclick="startFree('${s.id}')">${s.n}</button>`).join(``)}<button class="l" onclick="V='home';show()">Vissza</button>`}
  else if(V==`parent`){const m=Object.entries(S.miss).filter(e=>e[1]>0).sort((a,b)=>b[1]-a[1]).slice(0,8);
   $.innerHTML=`<h1>Szülői nézet</h1><p class="mu">Az utolsó 10 válasz alapján, készségenként.</p>
-  <div class="c">${SK.filter(s=>s.core||(S.hist[s.id]||[]).length).map(s=>{const n=(S.hist[s.id]||[]).length;return `<div class="row"><span>${s.n}</span><b>${n?Math.round(mean(s.id)*100)+`%`:`még nincs adat`}</b></div><div class="bar"><i style="width:${Math.round(mean(s.id)*100)}%"></i></div>`}).join(``)}</div>
-  <div class="c"><h2>Még bizonytalan tények</h2>${m.length?m.map(e=>`<div class="row"><span>${e[0]}</span><b>${e[1]}×</b></div>`).join(``):`<p class="mu">Egyelőre nincs ilyen.</p>`}</div>
-  <div class="c"><div class="row"><span>Gyakorolt napok</span><b>${S.days.length}</b></div><div class="row"><span>Pontok</span><b>${S.pts}</b></div></div>
+  <div class="c">${SK.filter(s=>s.core||(S.hist[s.id]||[]).length).map(s=>{const n=(S.hist[s.id]||[]).length;return `<div class="row"><span>${s.n}${mast(s.id)?` ⭐ mester`:``}</span><b>${n?Math.round(mean(s.id)*100)+`%`:`még nincs adat`}</b></div><div class="bar"><i style="width:${Math.round(mean(s.id)*100)}%"></i></div>`}).join(``)}</div>
+  <div class="c"><h2>Még bizonytalan tények</h2>${m.length?m.map(e=>`<div class="row"><span>${esc(e[0])}</span><b>${e[1]}×</b></div>`).join(``):`<p class="mu">Egyelőre nincs ilyen.</p>`}</div>
+  <div class="c"><div class="row"><span>Angol szókincs (${S.words.length} szó)</span><b>${(S.hist.en||[]).length?Math.round(mean(`en`)*100)+`%`:`még nincs adat`}</b></div><div class="bar"><i style="width:${Math.round(mean(`en`)*100)}%"></i></div></div><button class="b s" onclick="V='words';show()">Angol szavak kezelése</button>
+  <div class="c"><div class="row"><span>Gyakorolt napok</span><b>${S.days.length}</b></div><div class="row"><span>Összes csillag</span><b>${S.stars||0}</b></div><div class="row"><span>Zenekar / ruhák</span><b>${S.band.length} / ${S.gear.length}</b></div></div>
   ${role==`parent`?``:`<button class="b" onclick="pAuth=false;V='home';show()">Vissza</button>`}<button class="b s" onclick="exp()">Haladás mentése fájlba</button><button class="b s" onclick="document.getElementById('imf').click()">Haladás betöltése fájlból</button><input id="imf" type="file" accept=".json" hidden onchange="imp(this)">${role==`parent`?`<button class="b" onclick="logout()">Kilépés</button>`:``}
-  <button class="l" onclick="if(rs){S={hist:{},miss:{},days:[],diag:false,pts:0,steps:0,items:[],mute:S.mute};save();rs=false;V='home'}else{rs=true}show()">${rs?`Biztosan? Kattints még egyszer`:`Haladás törlése`}</button>`}
+  <button class="l" onclick="if(rs){S={hist:{},miss:{},days:[],diag:false,pts:0,steps:0,items:[],words:(S.words||[]).map(w=>({...w,h:[]})),stars:0,gear:[],eq:{head:``,face:``},gearN:0,band:[],mute:S.mute};save();rs=false;V='home'}else{rs=true}show()">${rs?`Biztosan? Kattints még egyszer`:`Haladás törlése`}</button>`}
 }
 
 const gv=id=>document.getElementById(id).value,U=()=>{try{return JSON.parse(localStorage.getItem(`szl_users`))}catch(e){return null}};
@@ -205,7 +219,7 @@ async function hs(p,s){try{const b=await crypto.subtle.digest(`SHA-256`,new Text
 const salt=()=>Math.random().toString(36).slice(2)+Math.random().toString(36).slice(2);
 function authView(){
  if(!role&&![`setup`,`login`,`pin`].includes(V))V=U()?`login`:`setup`;
- if(V==`parent`&&!pAuth)V=role?`home`:`login`;
+ if((V==`parent`||V==`words`)&&!pAuth)V=role?`home`:`login`;
  if(V==`home`&&role==`parent`)V=`parent`;
  if(V==`setup`){$.innerHTML=`<h1>Üdv a Számolósban!</h1><p class="mu">Egyszeri beállítás a szülőnek. A PIN-kódok csak ezen az eszközön tárolódnak.</p>
  <div class="c"><h2>Gyerek</h2><input class="f" id="sn" type="text" placeholder="Név" autocomplete="off"><input class="f" id="sc" type="password" inputmode="numeric" maxlength="4" placeholder="Gyerek PIN (4 jegy, elhagyható)"></div>
@@ -232,6 +246,47 @@ function logout(){try{localStorage.removeItem(`szl_role`)}catch(e){}role=null;pA
 function exp(){const b=new Blob([JSON.stringify(S)],{type:`application/json`}),a=document.createElement(`a`);a.href=URL.createObjectURL(b);a.download=`szamolos-haladas-${today()}.json`;a.click()}
 function imp(i){const f=i.files[0];if(!f)return;f.text().then(t=>{try{const d=JSON.parse(t);if(d&&d.hist){S=Object.assign(S,d);save();alert(`Betöltve.`)}else alert(`Nem megfelelő fájl.`)}catch(e){alert(`Nem megfelelő fájl.`)}show()})}
 function boot(){const u=U();if(!u){V=`setup`;return show()}const sr=localStorage.getItem(`szl_role`);if(sr&&u[sr]){role=sr;pAuth=sr==`parent`;V=sr==`parent`?`parent`:`home`}else V=`login`;show()}
+let subj=null,wtxt=``,wmsg=``;
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const SAMPLE=`apple - alma\ndog - kutya\ncat - macska\nhouse - ház\nbook - könyv\nwater - víz\nred - piros\nblue - kék\ngreen - zöld\nmother - anya\nfather - apa\nschool - iskola\ntable - asztal\nchair - szék\nsun - nap\nmoon - hold\ntree - fa\nbird - madár\nfish - hal\nmilk - tej`;
+const shuf=a=>a.slice().sort(()=>Math.random()-.5);
+function subjView(){$.innerHTML=`<h1>Mit gyakorolsz ma?</h1><p class="mu">Válassz tantárgyat.</p><button class="b" onclick="setSubj('math')">🔢 Matek</button><button class="b" onclick="setSubj('en')">🇬🇧 Angol</button><div class="row"><button class="l" onclick="askParent()">Szülői nézet</button><button class="l" onclick="logout()">Kilépés</button></div>`}
+const setSubj=x=>{subj=x;V=`home`;show()};
+function homeEn(){const n=S.words.length;
+ $.innerHTML=`<h1>Angol</h1><p class="mu">${U()&&role==`child`?`Szia, ${U().child.name}! `:``}${n} szó vár rád.</p>${cards()}
+ ${n<4?`<div class="fb tp">Még nincs elég szó. Kérd meg a szülőt, hogy adjon hozzá szavakat a szülői nézetben (legalább 4 kell).</div>`:`<button class="b" onclick="startEn()">Mai gyakorlás</button>`}
+ <div class="row"><button class="l" onclick="subj=null;V='subj';show()">Tantárgyváltás</button><button class="l" onclick="askParent()">Szülői nézet</button><button class="l" onclick="S.mute=!S.mute;save();show()">${S.mute?`🔇`:`🔊`}</button></div>`}
+function mkEn(w,W){const sp=`speechSynthesis` in window,t=r(1,sp?3:2),af=t==1?`hu`:`en`,ot=shuf(W.filter(x=>x.id!=w.id&&x[af]!=w[af])).slice(0,3),o=shuf([w[af],...ot.map(x=>x[af])]);
+ return {q:t==1?`Mit jelent: ${esc(w.en)}?`:t==2?`Angolul: ${esc(w.hu)}`:`Melyik szót hallod?`,o:o,a:o.indexOf(w[af]),h:t==1?`Az első betűje: ${esc(w.hu[0])}…`:`${w.en.length} betűs, ${esc(w.en[0])} betűvel kezdődik.`,k:w.en,s:`en`,w:w.id,say:t!=2?w.en:null}}
+function startEn(){diag=false;Q=[];const W=S.words,sc=w=>{const h=w.h||[];return (h.length?h.reduce((a,b)=>a+b,0)/h.length:0)+Math.random()*.3},
+ o=W.slice().sort((a,b)=>sc(a)-sc(b)),se=W.filter(w=>(w.h||[]).length).sort((a,b)=>sc(b)-sc(a)),ws=[...(se[0]?[se[0]]:[]),...o.slice(0,6)];let g=0;
+ while(Q.length<8&&g<60){const x=mkEn(ws[g%ws.length],W);g++;if(!Q.some(y=>y.q==x.q))Q.push(x)}go()}
+function opt(k){if(locked)return;ans=String(k);sub()}
+function say(t){try{const u=new SpeechSynthesisUtterance(t);u.lang=`en-GB`;u.rate=.8;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}}
+function parseW(t){const out=[];t.split(/\r?\n/).forEach(l=>{l=l.trim();if(!l)return;let p=l.split(/\t|;|\s[-–—=:]\s|\s*=\s*|\s{3,}/).map(x=>x.trim()).filter(Boolean);
+ if(p.length<2&&l.includes(`,`)){const i=l.indexOf(`,`);p=[l.slice(0,i).trim(),l.slice(i+1).trim()]}
+ if(p.length>=2&&p[0]&&p[1])out.push([p[0].replace(/^\d+[.)]\s*/,``),p[1]])});return out}
+function wordsView(){const L=S.words.slice(-100).reverse();
+ $.innerHTML=`<h1>Angol szavak</h1><p class="mu">${S.words.length} szó. Soronként egy szópár: angol - magyar.</p>
+ <div class="c"><textarea class="f" id="wt" rows="6" placeholder="apple - alma">${esc(wtxt)}</textarea>
+ <p id="wm" class="mu">${esc(wmsg)}</p>
+ <button class="b" onclick="addW()">Szavak hozzáadása</button>
+ <button class="b s" onclick="document.getElementById('wf').click()">📄 Fájlból (txt, csv, json)</button>
+ <button class="b s" onclick="document.getElementById('wi').click()">📷 Képből (fotó)</button>
+ <button class="l" onclick="wtxt=SAMPLE;show()">Minta szavak betöltése</button>
+ <input id="wf" type="file" accept=".txt,.csv,.tsv,.json,text/plain" hidden onchange="fromFile(this)"><input id="wi" type="file" accept="image/*" hidden onchange="fromImg(this)"></div>
+ <div class="c"><h2>Szólista</h2>${L.length?L.map(w=>`<div class="row"><span>${esc(w.en)} – ${esc(w.hu)}</span><button class="l" onclick="delW('${w.id}')" aria-label="Törlés">✕</button></div>`).join(``):`<p class="mu">Még nincs szó.</p>`}</div>
+ <button class="b" onclick="V='parent';show()">Vissza</button>`}
+function addW(){const t=document.getElementById(`wt`).value,P=parseW(t);if(!P.length){wtxt=t;wmsg=`Nem találtam szópárt. Soronként írd: angol - magyar.`;return show()}
+ let n=0;P.forEach(([e,h])=>{if(!S.words.some(w=>w.en.toLowerCase()==e.toLowerCase())){S.words.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),en:e,hu:h,h:[]});n++}});save();wtxt=``;wmsg=`${n} új szó hozzáadva.`;show()}
+function delW(id){wtxt=document.getElementById(`wt`).value;S.words=S.words.filter(w=>w.id!=id);save();show()}
+function fromFile(i){const f=i.files[0];if(!f)return;wtxt=document.getElementById(`wt`).value;f.text().then(t=>{if(/\.json$/i.test(f.name)){try{const d=JSON.parse(t),a=Array.isArray(d)?d:(d.words||[]);t=a.map(x=>Array.isArray(x)?x.slice(0,2).join(` - `):`${x.en||x.angol||x.word||``} - ${x.hu||x.magyar||x.meaning||``}`).join(`\n`)}catch(e){}}
+ wtxt=(wtxt?wtxt+`\n`:``)+t.trim();wmsg=`Fájl beolvasva. Ellenőrizd a listát, majd nyomd meg a Hozzáadást.`;show()})}
+async function fromImg(i){const f=i.files[0];if(!f)return;wtxt=document.getElementById(`wt`).value;const m=document.getElementById(`wm`);m.textContent=`Kép feldolgozása… (internet kell, első alkalommal tovább tart)`;
+ try{if(!window.Tesseract)await new Promise((ok,no)=>{const x=document.createElement(`script`);x.src=`https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js`;x.onload=ok;x.onerror=no;document.head.appendChild(x)});
+ const R=await Tesseract.recognize(f,`eng+hun`,{logger:l=>{const e=document.getElementById(`wm`);if(e&&l.status==`recognizing text`)e.textContent=`Felismerés: ${Math.round(l.progress*100)}%`}});
+ wtxt=(wtxt?wtxt+`\n`:``)+R.data.text.trim();wmsg=`Kész. A felismerés hibázhat: ellenőrizd és javítsd a szavakat, mielőtt hozzáadod.`}
+ catch(e){wmsg=`Nem sikerült a képfelismerés (internet kell hozzá). Próbáld fájlból, vagy írd be a szavakat.`}show()}
 boot();
 if(`serviceWorker` in navigator)addEventListener(`load`,()=>navigator.serviceWorker.register(`sw.js`).catch(()=>{}));
 </script></body></html>
