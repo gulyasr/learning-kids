@@ -111,9 +111,9 @@ const SK=[
  if(t==5){const c=r(5,a+b-1);return {q:`A boltban ${a} darab piros és ${b} darab kék labda volt. ${c} darabot eladtak. Hány darab labda maradt?`,a:a+b-c,h:`${T} Két lépés: előbb számold ki, mennyi volt összesen (${a} + ${b}), aztán vond le az eladottat.`}}
  return {q:`Dóri ${a} darab kártyát gyűjtött, Peti ${b} darabbal többet. Hány darab kártyája van Petinek?`,a:a+b,h:`${T} A „többet” itt hozzáadást jelent: ${a} + ${b}.`}}}
 ];SK.slice(0,7).forEach(s=>s.core=1);const fmt=m=>`${Math.floor(m/60)}:${String(m%60).padStart(2,`0`)}`;
-let S={hist:{},miss:{},days:[],diag:false,pts:0,steps:0,items:[],words:[],stars:0,gear:[],eq:{head:``,face:``},gearN:0,band:[],mute:false};
+let S={hist:{},miss:{},days:[],diag:false,pts:0,steps:0,items:[],words:[],stars:0,gear:[],eq:{head:``,face:``},gearN:0,band:[],pg:{math:0,en:0},grade:4,preward:``,tro:0,mute:false};
 const DB={get:()=>localStorage.getItem(`szamolos`),set:v=>localStorage.setItem(`szamolos`,v)};
-try{const t=DB.get();if(t)S=Object.assign(S,JSON.parse(t))}catch(e){}
+try{const t=DB.get();if(t){const o=JSON.parse(t);S=Object.assign(S,o);if(!o.pg)S.pg={math:o.steps||0,en:0}}}catch(e){}
 const save=()=>{try{DB.set(JSON.stringify(S))}catch(e){}};
 const mean=id=>{const h=S.hist[id]||[];return h.length?h.reduce((x,y)=>x+y,0)/h.length:0};
 const aw=n=>{S.pts+=n;sp+=n};
@@ -128,24 +128,26 @@ const WD=[
 {n:`Jégvilág`,c:`#3a8fd9`,L:[`🏔️`,`⛄`,`🐧`,`🧊`,`🐻‍❄️`,`🎿`,`❄️`,`🦭`,`🏯`,`💠`],I:[`⛄`,`🧊`,`🐧`,`❄️`,`🦭`]},
 {n:`Világűr`,c:`#6a4bd6`,L:[`🚀`,`🌙`,`👽`,`☄️`,`🛸`,`🪐`,`⭐`,`🛰️`,`🌌`,`🏆`],I:[`🌙`,`☄️`,`👽`,`🪐`,`🛰️`]},
 {n:`Tenger alatt`,c:`#1c9fb0`,L:[`🏝️`,`🐠`,`🐢`,`🪸`,`🦈`,`🐙`,`🐚`,`🦀`,`🚢`,`🔱`],I:[`🐠`,`🐢`,`🪸`,`🐚`,`🐙`]}];
-const gw=n=>WD[Math.floor(n/10)%WD.length];
-const trail=n=>{const t=n==null?S.steps:n,w=gw(t),p=t%10;
- return `<div class="trail" style="--wc:${w.c}">${[0,1,2,3,4,9,8,7,6,5].map(k=>`<span class="${k<p?`v`:k==p?`me`:``}">${k==p?DZ:k==9?`🎁`:w.L[k]}</span>`).join(``)}</div>`};
+const gw=n=>chap(n);
+const trail=n=>{const t=n==null?S.steps:n,w=chap(t),W=WN(),cell=Math.floor((t%W)*10/W);
+ return `<div class="trail" style="--wc:${w.c}">${[0,1,2,3,4,9,8,7,6,5].map(k=>`<span class="${k<cell?`v`:k==cell?`me`:``}">${k==cell?DZ:k==9?`🎁`:w.L[k]}</span>`).join(``)}</div>`};
 let rw=[],stn=1,wd=0;
 const BAND=[{id:`s`,e:`🦕`,i:`🎤`,n:`Énekes`,at:5},{id:`g`,e:`🦎`,i:`🎸`,n:`Gitáros`,at:4},{id:`p`,e:`🐊`,i:`🪘`,n:`Ütős`,at:6},{id:`x`,e:`🐢`,i:`🎷`,n:`Szaxofonos`,at:7},{id:`d`,e:`🐲`,i:`🎧`,n:`DJ`,at:8}];
 const GEAR=[{e:`🤠`,s:`head`,n:`Felfedezőkalap`},{e:`🕶️`,s:`face`,n:`Napszemüveg`},{e:`🎩`,s:`head`,n:`Cilinder`},{e:`🥽`,s:`face`,n:`Szemüveg`},{e:`👑`,s:`head`,n:`Korona`},{e:`🧢`,s:`head`,n:`Sapka`},{e:`🎓`,s:`head`,n:`Diplomás kalap`},{e:`🎀`,s:`head`,n:`Masni`}];
 const hasB=id=>S.band.includes(id);
-function gift(){const g=GEAR[S.gearN%GEAR.length];S.gearN++;if(!S.gear.includes(g.e)){S.gear.push(g.e);if(!S.eq[g.s])S.eq[g.s]=g.e}return g}
-function finishRound(){rw=[];wd=0;if(diag){stn=0;return}
- const rt=got/Q.length,o=S.steps;stn=rt>=.85?3:rt>=.6?2:1;S.stars=(S.stars||0)+stn;S.steps+=stn;enq(`r`,{id:rid,ts:new Date().toISOString(),subject:subj==`en`?`en`:`math`,n:Q.length,correct:got,stars:stn});
- for(let b=o+1;b<=S.steps;b++){if(b%5)continue;
-  if(b%10==5){const g=gift();rw.push({e:g.e,t:`Félúti ajándék: ${g.n}!`})}
-  else{wd=b;const m=BAND[b/10-1];if(m&&!hasB(m.id)){S.band.push(m.id);rw.push({e:m.e+m.i,t:`Kincs: új zenekari tag, ${m.n}! Új hangszer a zenében.`})}else{const g=gift();rw.push({e:`🎁`+g.e,t:`Kincs: ${g.n}!`})}}}
- if(rw.length){setTimeout(fan,400);burst([`💎`,`🎉`,`⭐`,`🏆`])}}
+function gift(){const g=GEAR.find(x=>!S.gear.includes(x.e));if(!g){S.tro=(S.tro||0)+1;return {e:`🏆`,n:`Bajnoki trófea (${S.tro}.)`}}S.gear.push(g.e);if(!S.eq[g.s])S.eq[g.s]=g.e;return g}
+function finishRound(){rw=[];wd=0;sf=false;if(diag){stn=0;return}
+ const rt=got/Q.length,o=S.steps,W=WN(),M=MN();stn=rt>=.85?3:rt>=.6?2:1;S.stars=(S.stars||0)+stn;S.steps+=stn;S.pg[subj==`en`?`en`:`math`]=S.steps;
+ enq(`r`,{id:rid,ts:new Date().toISOString(),subject:subj==`en`?`en`:`math`,n:Q.length,correct:got,stars:stn});
+ for(let b=o+1;b<=S.steps;b++){if(b%M)continue;const c=chap(b-1),k=(b%W)/M;
+  if(b%W==0){wd=b;const m=BAND.find(x=>!hasB(x.id));let r;if(m){S.band.push(m.id);r={e:m.e+m.i,t:`Kincs: új zenekari tag, ${m.n}! Új hangszer a zenében.`}}else{const g=gift();r={e:g.e,t:`Kincs: ${g.n}!`}}
+   rw.push({...r,s:c.f});if((c.ci+1)%5==0)sf=true}
+  else{rw.push({e:`📖`,t:`Új epizód: ${c.n}`,s:c.ep[k-1]});if(k==3){const g=gift();rw.push({e:g.e,t:`Ajándék: ${g.n}!`})}}}
+ if(rw.length){setTimeout(fan,400);burst([`💎`,`🎉`,`⭐`,`🏆`]);if(sf)setTimeout(fan,1500)}}
 const dino=(l,z)=>`<span class="dwr d${l}"${z?` style="font-size:${z}px;line-height:${z*1.2}px"`:``}><span class="gh">${S.eq.head||``}</span>${DZ}<span class="gf">${S.eq.face||``}</span></span>`;
-function cards(){const st=streak(),w=gw(S.steps),p=S.steps%10,left=(p<5?5:10)-p;
- return `<div class="c" style="border:2px solid ${w.c}"><div class="row"><b>${w.n}</b><span>${p} / 10</span></div>${trail()}<p class="mu" style="margin:6px 0 0"><b>⭐ = 1 lépés.</b> Még ${left} lépés ${p<5?`a félúti ajándékig`:`a kincsig`}.</p></div>
- <div class="c"><div class="row"><b>Dínó zenekar</b><button class="l" onclick="V='wardrobe';show()">👕 Gardrób</button></div><div class="st">${BAND.map(b=>hasB(b.id)?`<span>${b.e}</span>`:`<span class="x">?</span>`).join(``)}</div><p class="mu" style="margin:8px 0 0">🏅 <b>${S.pts} pont</b> · ${st?`${st} napja gyakorolsz egyfolytában.`:`Ma még nem gyakoroltál.`}</p></div>`}
+function cards(){const st=streak(),w=chap(S.steps),W=WN(),M=MN(),p=S.steps%W,left=M-p%M;
+ return `<div class="c" style="border:2px solid ${w.c}"><div class="row"><b>${esc(w.sn)}${w.se>1?` · ${w.se}. évad`:``}</b><span>${w.ci%5+1}. fejezet</span></div><p style="margin:6px 0 0"><b>${w.n}</b></p>${trail()}<p class="mu" style="margin:6px 0 0">${w.i}</p><p class="mu" style="margin:6px 0 0"><b>⭐ = 1 lépés.</b> Még ${left} lépés ${p>=W-M?`a kincsig`:`a következő epizódig`}.</p></div>
+ <div class="c"><div class="row"><b>Dínó zenekar</b><button class="l" onclick="V='wardrobe';show()">👕 Gardrób</button></div><div class="st">${BAND.map(b=>hasB(b.id)?`<span>${b.e}</span>`:`<span class="x">?</span>`).join(``)}</div><p class="mu" style="margin:8px 0 0">🏅 <b>${S.pts} pont</b>${S.tro?` · 🏆 ×${S.tro}`:``} · ${st?`${st} napja gyakorolsz egyfolytában.`:`Ma még nem gyakoroltál.`}</p></div>`}
 function wardrobeView(){$.innerHTML=`<h1>Gardrób</h1><p class="mu">Koppints, és a dínó felveszi.</p><div class="c" style="text-align:center;padding-top:30px">${dino(1,72)}</div><div class="kp5">${GEAR.map(g=>S.gear.includes(g.e)?`<button class="b ${S.eq[g.s]==g.e?``:`s`}" onclick="eqp('${g.e}')">${g.e}</button>`:`<button class="b s" disabled>?</button>`).join(``)}</div><button class="b" onclick="V='home';show()">Kész</button>`}
 function eqp(e){const g=GEAR.find(x=>x.e==e);S.eq[g.s]=S.eq[g.s]==e?``:e;save();show()}
 let ans=``,seq=null,stp=0;
@@ -169,13 +171,13 @@ function key(k){if(locked)return;if(k==`✓`)return sub();if(k==`⌫`)ans=ans.sl
 document.addEventListener(`keydown`,e=>{if(V!=`quiz`)return;if(/^\d$/.test(e.key))key(e.key);else if(e.key==`Backspace`)key(`⌫`);else if(e.key==`Enter`)key(`✓`)});
 const combo=()=>{const l=cb>=8?4:cb>=5?3:cb>=3?2:cb>=1?1:0,ac=BAND.filter(b=>hasB(b.id)&&cb>=b.at),m=b=>`<span class="bm">${b.e}<small>${b.i}</small></span>`;
  return `<div class="stage"><div class="stg">${ac.filter((_,k)=>k%2==0).map(m).join(``)}${dino(l)}${ac.filter((_,k)=>k%2==1).map(m).join(``)}</div><div class="cap">${cb>=2?`${cb>=8?`TÖKÉLETES! `:cb>=5?`SZUPER! `:cb>=3?`SOROZAT! `:``}${cb} egymás után`:`&nbsp;`}</div></div>`};
-function startFree(id){diag=false;Q=[];add(SK.find(s=>s.id==id),8);go()}const lv=p=>Math.floor(p/100);const ST=[`🦊`,`🚀`,`🐙`,`🦄`,`🐲`,`🦖`,`🪐`,`🏆`];const mast=id=>(S.hist[id]||[]).length>=8&&mean(id)>=.9;
+function startFree(id){diag=false;Q=[];add(SK.find(s=>s.id==id),RN());go()}const lv=p=>Math.floor(p/100);const ST=[`🦊`,`🚀`,`🐙`,`🦄`,`🐲`,`🦖`,`🪐`,`🏆`];const mast=id=>(S.hist[id]||[]).length>=8&&mean(id)>=.9;
 const today=()=>new Date().toLocaleDateString(`sv`);
 const streak=()=>{const set=new Set(S.days);let d=new Date();if(!set.has(d.toLocaleDateString(`sv`)))d.setDate(d.getDate()-1);let n=0;while(set.has(d.toLocaleDateString(`sv`))){n++;d.setDate(d.getDate()-1)}return n};
 let V=`home`,Q=[],i=0,tr=0,diag=false,got=0,fb=``,hint=``,locked=false,rs=false,sp=0,cb=0,p0=0,ft=``,$=document.getElementById(`app`);
 const add=(sk,n)=>{let c=0,g=0;while(c<n&&g<200){g++;const x=sk.g();if(Q.some(y=>y.q==x.q))continue;x.s=sk.id;Q.push(x);c++}};
-function startDiag(){diag=true;Q=[];SK.filter(s=>s.core).forEach(s=>add(s,2));Q.sort(()=>Math.random()-.5);go()}
-function startPractice(){diag=false;Q=[];const has=s=>(S.hist[s.id]||[]).length>0,pool=SK.filter(s=>s.core||has(s)),o=pool.slice().sort((a,b)=>mean(a.id)-mean(b.id)),ex=SK.filter(s=>!s.core).sort((a,b)=>(S.hist[a.id]||[]).length-(S.hist[b.id]||[]).length)[0],st=pool.filter(has).sort((a,b)=>mean(b.id)-mean(a.id))[0]||o[o.length-1];add(st,2);add(o[0],4);if(ex&&ex!==o[0]&&ex!==st)add(ex,2);else add(o[0],2);go()}
+function startDiag(){diag=true;Q=[];gS().filter(s=>s.core).forEach(s=>add(s,2));Q.sort(()=>Math.random()-.5);go()}
+function startPractice(){diag=false;Q=[];const has=s=>(S.hist[s.id]||[]).length>0,pool=gS().filter(s=>s.core||has(s)),o=pool.slice().sort((a,b)=>mean(a.id)-mean(b.id)),ex=gS().filter(s=>!s.core).sort((a,b)=>(S.hist[a.id]||[]).length-(S.hist[b.id]||[]).length)[0],st=pool.filter(has).sort((a,b)=>mean(b.id)-mean(a.id))[0]||o[o.length-1];const sm=S.grade<=2;add(st,sm?1:2);add(o[0],sm?3:4);if(ex&&ex!==o[0]&&ex!==st)add(ex,sm?1:2);else add(o[0],sm?1:2);go()}
 function go(){ans=``;rid=uid();qt=Date.now();hid=0;i=0;tr=0;got=0;sp=0;cb=0;p0=S.pts;fb=``;hint=``;locked=false;V=`quiz`;show()}
 function rec(c,v){const h=(S.hist[c.s]||[]);h.push(v);S.hist[c.s]=h.slice(-10);if(c.w){const w=S.words.find(x=>x.id==c.w);if(w)w.h=(w.h||[]).concat(v).slice(-6)}evt(c,v);save()}
 function miss(c){if(c.k){S.miss[c.k]=(S.miss[c.k]||0)+1;save()}}
@@ -191,27 +193,32 @@ function show(){if(authView())return;if(V==`home`&&role==`child`&&!subj)V=`subj`
   ${cards()}
   <button class="b" onclick="${S.diag?`startPractice()`:`startDiag()`}">${S.diag?`Mai gyakorlás`:`Kezdjük egy kis felméréssel`}</button>${S.diag?`<button class="b s" onclick="V='free';show()">Szabad gyakorlás</button>`:``}
   ${S.diag?`<button class="b s" onclick="startDiag()">Új felmérés</button>`:`<p class="mu">Pár feladat, hogy lássuk, min érdemes kezdeni. Itt nincs rossz válasz, csak információ.</p>`}
-  ${S.diag?`<div class="c"><h2>Hol tartasz</h2>${SK.filter(s=>s.core||(S.hist[s.id]||[]).length).map(s=>`<div class="row"><span>${s.n}</span></div><div class="bar"><i style="width:${Math.round(mean(s.id)*100)}%"></i></div>`).join(``)}</div>`:``}
+  ${S.diag?`<div class="c"><h2>Hol tartasz</h2>${gS().filter(s=>s.core||(S.hist[s.id]||[]).length).map(s=>`<div class="row"><span>${s.n}</span></div><div class="bar"><i style="width:${Math.round(mean(s.id)*100)}%"></i></div>`).join(``)}</div>`:``}
   <button class="l" onclick="subj=null;V='subj';show()">Tantárgyváltás</button><div class="row"><button class="l" onclick="askParent()">Szülői nézet</button><button class="l" onclick="S.mute=!S.mute;save();show()">${S.mute?`🔇 Hang: ki`:`🔊 Hang: be`}</button><button class="l" onclick="logout()">Kilépés</button></div>`}
  else if(V==`quiz`){const c=Q[i];
   $.innerHTML=`<div class="dots">${Q.map((_,k)=>`<i class="${k<i?`d`:``}"></i>`).join(``)}</div>
-  ${combo()}<div class="c"><div class="q${c.q.length>14?` t`:``}">${c.q}${c.q.length>14||c.o?``:` = ?`}</div></div>
+  ${combo()}<div class="c"><div class="q${c.q.length>14?` t`:``}">${c.q}${c.q.length>14||c.o||c.q.includes(`?`)?``:` = ?`}</div></div>
   <div class="fbw">${fb==`ok`?`<div class="fb ok">${ft}</div>`:fb==`tp`?`<div class="fb tp"><b>Majdnem!</b> Egy tipp: ${hint}<br>Próbáld újra.</div>`:fb==`ans`?`<div class="fb tp">A válasz: <b>${c.o?esc(c.o[c.a]):c.a}</b>. Semmi baj, megyünk tovább!</div>`:``}</div>
   ${c.o?`${c.say?`<button class="b s" onclick="say(Q[i].say)">🔊 Meghallgatom</button>`:``}<div class="opts">${c.o.map((t,k)=>`<button class="b s" onclick="opt(${k})">${esc(t)}</button>`).join(``)}</div>`:`<div class="ans" id="ans">${ans||`&nbsp;`}</div>
   <div class="kp">${[1,2,3,4,5,6,7,8,9,`⌫`,0,`✓`].map(k=>`<button class="b ${k==`✓`?``:`s`}" onclick="key('${k}')" aria-label="${k==`⌫`?`Törlés`:k==`✓`?`Kész`:k}">${k}</button>`).join(``)}</div>`}
   <button class="l" onclick="V='home';show()">Kilépek</button>`;}
- else if(V==`done`){const p=S.steps%10,wl=wd?gw(wd-1):gw(S.steps),left=(p<5?5:10)-p;
+ else if(V==`done`){const W=WN(),M=MN(),p=S.steps%W,wl=wd?chap(wd-1):chap(S.steps),left=M-p%M;
  $.innerHTML=diag?`<div class="c"><div class="big">🎉</div><h2 style="text-align:center">Kész a felmérés!</h2><p class="mu" style="text-align:center">Most már tudjuk, min érdemes kezdeni.</p></div><button class="b" onclick="V='home';show()">Vissza</button>`
- :`<div class="c"><div class="big pop">${`⭐`.repeat(stn)}${`☆`.repeat(3-stn)}</div><p class="mu" style="text-align:center;margin:0"><b>Elsőre jó: ${got} / ${Q.length}</b></p><p style="text-align:center;margin:8px 0 0">${stn} csillag = <b>+${stn} lépés</b> · <b>+${sp} pont</b></p></div>${rw.map(x=>`<div class="fb ok pop" style="font-size:17px"><span style="font-size:28px">${x.e}</span> ${x.t}</div>`).join(``)}<div class="c" style="border:2px solid ${wl.c}"><div class="row"><b>${wl.n}</b></div>${trail(wd?wd-1:undefined)}<p class="mu" style="margin:6px 0 0">${wd?`Megvan a kincs! Új világ következik: ${gw(S.steps).n}.`:`Még ${left} lépés ${p<5?`a félúti ajándékig`:`a kincsig`}.`}</p></div><button class="b" onclick="V='home';show()">Vissza</button>`}
- else if(V==`free`){$.innerHTML=`<h1>Szabad gyakorlás</h1><p class="mu">Válassz, mit szeretnél gyakorolni. 8 feladat jön.</p>${SK.map(s=>`<button class="b s" onclick="startFree('${s.id}')">${s.n}</button>`).join(``)}<button class="l" onclick="V='home';show()">Vissza</button>`}
+ :`<div class="c"><div class="big pop">${`⭐`.repeat(stn)}${`☆`.repeat(3-stn)}</div><p class="mu" style="text-align:center;margin:0"><b>Elsőre jó: ${got} / ${Q.length}</b></p><p style="text-align:center;margin:8px 0 0">${stn} csillag = <b>+${stn} lépés</b> · <b>+${sp} pont</b></p></div>
+ ${rw.map(x=>`<div class="fb ok pop" style="font-size:17px"><span style="font-size:28px">${x.e}</span> ${x.t}${x.s?`<p style="margin:8px 0 0;font-size:16px">${esc(x.s)}</p><button class="l" data-t="${esc(x.s)}" onclick="say(this.dataset.t,'hu-HU')">🔊 Felolvasom</button>`:``}</div>`).join(``)}
+ ${sf?`<div class="c pop" style="text-align:center"><div class="big">${BAND.filter(b=>hasB(b.id)).map(b=>b.e+b.i).join(` `)}</div><h2>🎉 NAGYKONCERT! 🎉</h2><p>Befejezted az évadot, a teljes zenekar fellép!</p>${S.preward?`<p><b>Szülői kincs:</b> ${esc(S.preward)} 🎁</p>`:``}<p class="mu">Új évad kezdődik.</p></div>`:``}
+ <div class="c" style="border:2px solid ${wl.c}"><div class="row"><b>${wl.n}</b><span>${wl.ci%5+1}. fejezet</span></div>${trail(wd?wd-1:undefined)}<p class="mu" style="margin:6px 0 0">${wd?`Fejezet kész! Következik: ${chap(S.steps).n}.`:`Még ${left} lépés ${p>=W-M?`a kincsig`:`a következő epizódig`}.`}</p></div><button class="b" onclick="V='home';show()">Vissza</button>`}
+ else if(V==`free`){$.innerHTML=`<h1>Szabad gyakorlás</h1><p class="mu">Válassz, mit szeretnél gyakorolni. 8 feladat jön.</p>${gS().map(s=>`<button class="b s" onclick="startFree('${s.id}')">${s.n}</button>`).join(``)}<button class="l" onclick="V='home';show()">Vissza</button>`}
  else if(V==`parent`){const m=Object.entries(S.miss).filter(e=>e[1]>0).sort((a,b)=>b[1]-a[1]).slice(0,8);
   $.innerHTML=`<h1>Szülői nézet</h1><p class="mu">Az utolsó 10 válasz alapján, készségenként.</p>
-  <div class="c">${SK.filter(s=>s.core||(S.hist[s.id]||[]).length).map(s=>{const n=(S.hist[s.id]||[]).length;return `<div class="row"><span>${s.n}${mast(s.id)?` ⭐ mester`:``}</span><b>${n?Math.round(mean(s.id)*100)+`%`:`még nincs adat`}</b></div><div class="bar"><i style="width:${Math.round(mean(s.id)*100)}%"></i></div>`}).join(``)}</div>
+  <div class="c">${gS().filter(s=>s.core||(S.hist[s.id]||[]).length).map(s=>{const n=(S.hist[s.id]||[]).length;return `<div class="row"><span>${s.n}${mast(s.id)?` ⭐ mester`:``}</span><b>${n?Math.round(mean(s.id)*100)+`%`:`még nincs adat`}</b></div><div class="bar"><i style="width:${Math.round(mean(s.id)*100)}%"></i></div>`}).join(``)}</div>
   <div class="c"><h2>Még bizonytalan tények</h2>${m.length?m.map(e=>`<div class="row"><span>${esc(e[0])}</span><b>${e[1]}×</b></div>`).join(``):`<p class="mu">Egyelőre nincs ilyen.</p>`}</div>
-  <div class="c"><div class="row"><span>Angol szókincs (${S.words.length} szó)</span><b>${(S.hist.en||[]).length?Math.round(mean(`en`)*100)+`%`:`még nincs adat`}</b></div><div class="bar"><i style="width:${Math.round(mean(`en`)*100)}%"></i></div></div><button class="b s" onclick="V='words';show()">Angol szavak kezelése</button><button class="b s" onclick="V='cloud';show()">☁️ Felhő (szinkron, párosítás)</button>
+  <div class="c"><div class="row"><span>Angol szókincs (${S.words.length} szó)</span><b>${(S.hist.en||[]).length?Math.round(mean(`en`)*100)+`%`:`még nincs adat`}</b></div><div class="bar"><i style="width:${Math.round(mean(`en`)*100)}%"></i></div></div><div class="c"><h2>Osztály</h2><div class="kp" style="grid-template-columns:repeat(4,1fr)">${[1,2,3,4].map(g=>`<button class="b ${S.grade==g?``:`s`}" onclick="S.grade=${g};save();show()">${g}.</button>`).join(``)}</div><p class="mu" style="margin:0">1-2. osztály: rövidebb kör (5 feladat), rövidebb fejezetek és kisebb számok. 3-4. osztály: 8 feladat, hosszabb fejezetek.</p></div>
+  <div class="c"><h2>Szülői kincs</h2><p class="mu">Ez jelenik meg a gyereknek, amikor befejez egy évadot (pl. közös fagyizás).</p><input class="f" id="prw" type="text" value="${esc(S.preward||``)}" placeholder="pl. Közös fagyizás 🍦"><button class="b s" onclick="S.preward=gv('prw').trim();save();alert('Mentve.')">Mentés</button></div>
+  <button class="b s" onclick="V='words';show()">Angol szavak kezelése</button><button class="b s" onclick="V='cloud';show()">☁️ Felhő (szinkron, párosítás)</button>
   <div class="c"><div class="row"><span>Gyakorolt napok</span><b>${S.days.length}</b></div><div class="row"><span>Összes csillag</span><b>${S.stars||0}</b></div><div class="row"><span>Zenekar / ruhák</span><b>${S.band.length} / ${S.gear.length}</b></div></div>
   ${role==`parent`?``:`<button class="b" onclick="pAuth=false;V='home';show()">Vissza</button>`}<button class="b s" onclick="exp()">Haladás mentése fájlba</button><button class="b s" onclick="document.getElementById('imf').click()">Haladás betöltése fájlból</button><input id="imf" type="file" accept=".json" hidden onchange="imp(this)">${role==`parent`?`<button class="b" onclick="logout()">Kilépés</button>`:``}
-  <button class="l" onclick="if(rs){S={hist:{},miss:{},days:[],diag:false,pts:0,steps:0,items:[],words:(S.words||[]).map(w=>({...w,h:[]})),stars:0,gear:[],eq:{head:``,face:``},gearN:0,band:[],mute:S.mute};save();rs=false;V='home'}else{rs=true}show()">${rs?`Biztosan? Kattints még egyszer`:`Haladás törlése`}</button>`}
+  <button class="l" onclick="if(rs){S={hist:{},miss:{},days:[],diag:false,pts:0,steps:0,items:[],words:(S.words||[]).map(w=>({...w,h:[]})),stars:0,gear:[],eq:{head:``,face:``},gearN:0,band:[],pg:{math:0,en:0},grade:S.grade,preward:S.preward,tro:0,mute:S.mute};save();rs=false;V='home'}else{rs=true}show()">${rs?`Biztosan? Kattints még egyszer`:`Haladás törlése`}</button>`}
 }
 
 const gv=id=>document.getElementById(id).value,U=()=>{try{return JSON.parse(localStorage.getItem(`szl_users`))}catch(e){return null}};
@@ -252,7 +259,7 @@ const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 const SAMPLE=`apple - alma\ndog - kutya\ncat - macska\nhouse - ház\nbook - könyv\nwater - víz\nred - piros\nblue - kék\ngreen - zöld\nmother - anya\nfather - apa\nschool - iskola\ntable - asztal\nchair - szék\nsun - nap\nmoon - hold\ntree - fa\nbird - madár\nfish - hal\nmilk - tej`;
 const shuf=a=>a.slice().sort(()=>Math.random()-.5);
 function subjView(){$.innerHTML=`<h1>Mit gyakorolsz ma?</h1><p class="mu">Válassz tantárgyat.</p><button class="b" onclick="setSubj('math')">🔢 Matek</button><button class="b" onclick="setSubj('en')">🇬🇧 Angol</button><div class="row"><button class="l" onclick="askParent()">Szülői nézet</button><button class="l" onclick="logout()">Kilépés</button></div>`}
-const setSubj=x=>{subj=x;V=`home`;show()};
+const setSubj=x=>{subj=x;S.steps=S.pg[x==`en`?`en`:`math`]||0;V=`home`;show()};
 function homeEn(){const n=S.words.length;
  $.innerHTML=`<h1>Angol</h1><p class="mu">${U()&&role==`child`?`Szia, ${U().child.name}! `:``}${n} szó vár rád.</p>${cards()}
  ${n<4?`<div class="fb tp">Még nincs elég szó. Kérd meg a szülőt, hogy adjon hozzá szavakat a szülői nézetben (legalább 4 kell).</div>`:`<button class="b" onclick="startEn()">Mai gyakorlás</button>`}
@@ -261,9 +268,9 @@ function mkEn(w,W){const sp=`speechSynthesis` in window,t=r(1,sp?3:2),af=t==1?`h
  return {q:t==1?`Mit jelent: ${esc(w.en)}?`:t==2?`Angolul: ${esc(w.hu)}`:`Melyik szót hallod?`,o:o,a:o.indexOf(w[af]),h:t==1?`Az első betűje: ${esc(w.hu[0])}…`:`${w.en.length} betűs, ${esc(w.en[0])} betűvel kezdődik.`,k:w.en,s:`en`,w:w.id,say:t!=2?w.en:null}}
 function startEn(){diag=false;Q=[];const W=S.words,sc=w=>{const h=w.h||[];return (h.length?h.reduce((a,b)=>a+b,0)/h.length:0)+Math.random()*.3},
  o=W.slice().sort((a,b)=>sc(a)-sc(b)),se=W.filter(w=>(w.h||[]).length).sort((a,b)=>sc(b)-sc(a)),ws=[...(se[0]?[se[0]]:[]),...o.slice(0,6)];let g=0;
- while(Q.length<8&&g<60){const x=mkEn(ws[g%ws.length],W);g++;if(!Q.some(y=>y.q==x.q))Q.push(x)}go()}
+ while(Q.length<RN()&&g<60){const x=mkEn(ws[g%ws.length],W);g++;if(!Q.some(y=>y.q==x.q))Q.push(x)}go()}
 function opt(k){if(locked)return;ans=String(k);sub()}
-function say(t){try{const u=new SpeechSynthesisUtterance(t);u.lang=`en-GB`;u.rate=.8;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}}
+function say(t,l){try{const u=new SpeechSynthesisUtterance(t);u.lang=l||`en-GB`;u.rate=.8;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}}
 function parseW(t){const out=[];t.split(/\r?\n/).forEach(l=>{l=l.trim();if(!l)return;let p=l.split(/\t|;|\s[-–—=:]\s|\s*=\s*|\s{3,}/).map(x=>x.trim()).filter(Boolean);
  if(p.length<2&&l.includes(`,`)){const i=l.indexOf(`,`);p=[l.slice(0,i).trim(),l.slice(i+1).trim()]}
  if(p.length>=2&&p[0]&&p[1])out.push([p[0].replace(/^\d+[.)]\s*/,``),p[1]])});return out}
@@ -289,6 +296,26 @@ async function fromImg(i){const f=i.files[0];if(!f)return;wtxt=document.getEleme
  wtxt=(wtxt?wtxt+`\n`:``)+R.data.text.trim();wmsg=`Kész. A felismerés hibázhat: ellenőrizd és javítsd a szavakat, mielőtt hozzáadod.`}
  catch(e){wmsg=`Nem sikerült a képfelismerés (internet kell hozzá). Próbáld fájlból, vagy írd be a szavakat.`}show()}
 
+const STORY={
+math:{n:`Kincskereső szafari`,ch:[
+{n:`Dzsungel`,c:`#2f8f4e`,L:[`🌴`,`🍌`,`🐒`,`🌉`,`🐊`,`🦜`,`🌺`,`🐍`,`🏛️`,`👑`],i:`A dínó talált egy térképet: a kincshez öt kódlakatot kell kinyitni. Az első a dzsungelben van!`,ep:[`A dínó átvágott a sűrű bokrokon, és egy ösvényre lelt.`,`Egy vidám majom megmutatta az utat a függőhídhoz.`,`Átkeltek a hídon. A krokodil morgott, de a dínó nem ijedt meg.`,`A papagáj egy titkos számot súgott: ez a lakat kulcsa!`,`Már látszik a templom a fák között. Még egy kicsit!`],f:`Kattant az első kódlakat! A dzsungel titka megoldva.`},
+{n:`Vulkán`,c:`#d9531e`,L:[`🌋`,`🔥`,`🦎`,`🌉`,`🪨`,`🐉`,`⛏️`,`💥`,`🏰`,`💎`],i:`A második kódlakat a Tűzhegy tetején van. Vigyázz, forró a talaj!`,ep:[`A dínó forró kövek között lépkedett, ügyesen kerülgetve a lávát.`,`Egy kis gyík megmutatta a biztonságos ösvényt.`,`A hegy morgott, de a dínó megállt, és számolt egyet.`,`A sárkányfióka tüzet fújt, és megvilágította a rejtett barlangot.`,`A csúcs már közel van, érződik a meleg!`],f:`Kattant a második kódlakat! A Tűzhegy elcsendesedett.`},
+{n:`Jégvilág`,c:`#3a8fd9`,L:[`🏔️`,`⛄`,`🐧`,`🧊`,`🐻‍❄️`,`🎿`,`❄️`,`🦭`,`🏯`,`💠`],i:`A harmadik lakat a jég birodalmában rejtőzik. Húzd fel a sálat!`,ep:[`A dínó hóbuckák között gázolt, a lába nyomán apró csillagok csillogtak.`,`Egy pingvin a hátán csúsztatta tovább a jégen.`,`A jégtömbök között egy térképdarab fagyott meg.`,`A jegesmedve segített felolvasztani a darabot.`,`Már látszik a jégvár tornya a ködben!`],f:`Kattant a harmadik kódlakat! A jégvár kapui kinyíltak.`},
+{n:`Világűr`,c:`#6a4bd6`,L:[`🚀`,`🌙`,`👽`,`☄️`,`🛸`,`🪐`,`⭐`,`🛰️`,`🌌`,`🏆`],i:`A negyedik lakat a csillagok között van. Indul a rakéta!`,ep:[`A dínó beszállt a rakétába, és a Hold felé száguldott.`,`Egy barátságos földönkívüli integetett a bolygó mellett.`,`Egy üstökös elsuhant mellettük, a farka csillogott.`,`A műhold üzenetet küldött: „Már nincs messze!”`,`Látszik a csillagködben a titkos állomás!`],f:`Kattant a negyedik kódlakat! Az űrállomás kapui kinyíltak.`},
+{n:`Tenger alatt`,c:`#1c9fb0`,L:[`🏝️`,`🐠`,`🐢`,`🪸`,`🦈`,`🐙`,`🐚`,`🦀`,`🚢`,`🔱`],i:`Az utolsó lakat a mélyben vár. Búvársisak fel!`,ep:[`A dínó lemerült a hullámok alá, buborékok szálltak körülötte.`,`Egy teknős megmutatta a korallzátony titkos kapuját.`,`A polip nyolc karjával mutatta az irányt.`,`Egy kagylóban csillogó kulcs rejtőzött.`,`A kincsesláda már látszik a homokban!`],f:`Kattant az utolsó kódlakat! A Nagy Számkincs a tiéd!`}]},
+en:{n:`Világutazó`,ch:[
+{n:`London`,c:`#c0392b`,L:[`🛬`,`🚇`,`🎡`,`🕰️`,`🚌`,`☂️`,`🍵`,`🌉`,`🏰`,`👑`],i:`A dínó aranyútlevelet kapott. Az első állomás London: itt minden szó új kalandot rejt!`,ep:[`A dínó leszállt a repülőtéren, és megtanulta: „Hello!”`,`A metrón egy mosolygós néni segített neki jegyet venni.`,`A London Eye óriáskeréken az egész város látszott.`,`Megállt a nagy óra: a Big Ben pont délt ütött.`,`Egy piros emeletes busz vitte tovább a palota felé.`],f:`Az útlevélbe bekerült az első pecsét: London! Irány New York!`},
+{n:`New York`,c:`#2c3e90`,L:[`🛬`,`🚕`,`🗽`,`🌭`,`🏙️`,`🌳`,`🎭`,`🌉`,`🍎`,`🏆`],i:`New York a felhőkarcolók városa. Itt gyorsan pörögnek a szavak!`,ep:[`A sárga taxi pont a dínó előtt fékezett.`,`A Szabadság-szobor a fáklyájával köszöntötte a vendéget.`,`A dínó kapott egy hot dogot, és megtanulta: „Please!”`,`A Central Parkban mókusok kergetőztek a fák között.`,`Egy színházban a dínó tapsolt a színészeknek.`],f:`Második pecsét az útlevélben: New York! Tovább, Sydney felé!`},
+{n:`Sydney`,c:`#e08a1e`,L:[`🛬`,`🦘`,`🏄`,`🐨`,`🌊`,`🦈`,`⛵`,`🎶`,`🌅`,`🏆`],i:`Sydney a kenguruk és a hullámok földje. Fel a hullámlovaglódeszkára!`,ep:[`Egy kenguru ugrándozott a dínó mellett a parton.`,`A dínó felmászott a deszkára, és a hullámon lovagolt.`,`Egy koala kapaszkodott az eukaliptuszba, és integetett.`,`A kikötőben vitorlások ringtak a naplementében.`,`A zenekar a strandon játszott, és a dínó táncra perdült.`],f:`Harmadik pecsét: Sydney! Következik Kanada!`},
+{n:`Kanada`,c:`#b03a2e`,L:[`🛬`,`🍁`,`🚂`,`🏒`,`🏞️`,`🐻`,`🍯`,`🦌`,`🗼`,`💎`],i:`Kanadában a juharlevelek és a tavak várnak. Hideg is lehet, vigyázz!`,ep:[`A dínó juharleveleket gyűjtött az ösvényen.`,`A vonat átzakatolt a hegyek között.`,`Egy jégkorongmeccsen a dínó szurkolt a legjobban.`,`Egy barna medve mézet kínált a tó partján.`,`Az őz egy nagy toronyhoz vezette a dínót.`],f:`Negyedik pecsét: Kanada! Az utolsó állomás Írország!`},
+{n:`Írország`,c:`#1e8449`,L:[`🛬`,`☘️`,`🍀`,`🐑`,`🎻`,`🏰`,`🌈`,`🧙`,`🪙`,`🏆`],i:`Írországban zöld dombok és vidám dallamok várnak. Az utolsó állomás!`,ep:[`A dínó zöld dombokon sétált, és négylevelű lóherét talált.`,`Egy bárány követte, és vidáman bégetett.`,`Egy utcazenész hegedült, a dínó pedig táncra perdült.`,`Egy szivárvány hidat vetett a völgy fölé.`,`Egy manó az aranyérmék felé mutatott.`],f:`Az utolsó pecsét: Írország! A világutazó dínó hazatért, tele új szavakkal!`}]}};
+const gS=()=>SK.filter(s=>S.grade<=2?s.y:!s.y),WN=()=>S.grade<=2?18:30,MN=()=>WN()/6,RN=()=>S.grade<=2?5:8;
+const chap=n=>{const st=STORY[subj==`en`?`en`:`math`],ci=Math.floor(n/WN());return {...st.ch[ci%5],ci,sn:st.n,se:Math.floor(ci/5)+1}};
+SK.push({id:`g1`,n:`Összeadás 20-ig`,y:1,core:1,g:()=>{const a=r(1,19),b=r(1,20-a);return {q:`${a} + ${b}`,a:a+b,h:a<10&&a+b>10?`Egészítsd ki tízre: ${a} + ${10-a} = 10, utána add hozzá a maradékot (${b-(10-a)}).`:`Számolj tovább ${a}-tól, ${b} lépést.`}}},
+{id:`g2`,n:`Kivonás 20-ig`,y:1,core:1,g:()=>{const a=r(5,20),b=r(1,a-1);return {q:`${a} − ${b}`,a:a-b,h:`Gondold: ${b} + ? = ${a}. Vagy számolj vissza ${a}-tól ${b} lépést.`}}},
+{id:`g3`,n:`Tízes barátok`,y:1,core:1,g:()=>{const n=r(1,9);return {q:`${n} + ? = 10`,a:10-n,h:`Az ujjaidon: ${n} ujj fel, hány kell még a tízhez?`}}},
+{id:`g4`,n:`Szorzás: 2, 5, 10`,y:1,core:1,g:()=>mq(pick([2,5,10]),r(2,10))});
+let sf=false;
 let qt=0,hid=0,hts=0,fms=null,rid=``,pcode=``,pdata=null,sb=null,cm=``,cbusy=false;
 const uid=()=>crypto.randomUUID?crypto.randomUUID():`xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx`.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return (c==`x`?r:r&3|8).toString(16)});
 document.addEventListener(`visibilitychange`,()=>{if(document.hidden)hts=Date.now();else if(hts){hid+=Date.now()-hts;hts=0}});
